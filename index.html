@@ -942,17 +942,8 @@
             ? `<span class='art-name art-tooltip'>${art.name}<span class='tip'>${tipHtml}</span></span>`
             : `<span class='art-name'>${art.name}</span>`;
           card.innerHTML=`<div class='art-head'>${artNameHtml}<span class='art-lvl'>Lv ${art.lv}</span><span class='art-xp'>${art.xp.toLocaleString()} xp</span></div>
-            ${noteHtml}${untrackedHtml}${matRows}<div class='art-footer'><span class='${can?"art-can":"art-cant"}'>${can?"✔ Can restore":"✖ Missing mats"}</span>
-            ${can?`<button class='btn suc' style='font-size:9px;padding:2px 6px' data-restore='${art.name}'>Restore →</button>`:""}</div>`;
+            ${noteHtml}${untrackedHtml}${matRows}<div class='art-footer'><span class='${can?"art-can":"art-cant"}'>${can?"✔ Can restore":"✖ Missing mats"}</span></div>`;
           scroll.appendChild(card);
-        });
-      });
-      scroll.querySelectorAll("[data-restore]").forEach(b=>{
-        b.addEventListener("click", ()=>{
-          const art=ARTEFACTS.find(a=>a.name===b.dataset.restore);
-          if(!art||!canRestore(art)) return;
-          Object.entries(art.mats).filter(e=>isMat(e[0])).forEach(e=>{ S.counts[e[0]]=Math.max(0,(S.counts[e[0]]||0)-e[1]); });
-          save(); renderMats(); renderArts(); renderCollections();
         });
       });
     }
