@@ -455,6 +455,20 @@
       {name:"Chuluu stone",site:"Stormguard Citadel",lv:118,xp:43333,mats:{"Aetherium alloy":40,"Goldrune":24,"Quintessence":30,"Soapstone":40}},
       {name:"Quintessence counter",site:"Stormguard Citadel",lv:118,xp:43333,mats:{"Quintessence":54,"Stormguard steel":40,"White oak":40}},
       {name:"Spherical astrolabe",site:"Stormguard Citadel",lv:118,xp:43333,mats:{"Aetherium alloy":46,"Armadylean yellow":40,"Orthenglass":48}},
+      {name:"'Da Boss Man' sculpture",site:"Warforge",lv:119,xp:0,mats:{"Yu'biusk clay":50,"Malachite green":44,"Soapstone":44}},
+      {name:"Horogothgar cooking pot",site:"Warforge",lv:119,xp:0,mats:{"Yu'biusk clay":60,"Malachite green":38,"Soapstone":40}},
+      {name:"Lingam stone",site:"Orthen",lv:0,xp:0,mats:{"Orgone":44,"Carbon black":30,"Compass rose":32}},
+      {name:"Master control",site:"Orthen",lv:0,xp:0,mats:{"Orgone":30,"Carbon black":32,"Compass rose":44}},
+      {name:"Comfort gatestone",site:"Orthen",lv:0,xp:0,mats:{"Orthenglass":40,"Orgone":34,"Compass rose":30}},
+      {name:"Halak's cube",site:"Orthen",lv:0,xp:0,mats:{"Compass rose":36,"Carbon black":40,"Orgone":28}},
+      {name:"Portable portal generator",site:"Orthen",lv:0,xp:0,mats:{"Dragon metal":50,"Orthenglass":36,"Goldrune":34}},
+      {name:"Warped trinket",site:"Orthen",lv:0,xp:0,mats:{"Dragon metal":30,"Orthenglass":30,"Soapstone":30,"Goldrune":30}},
+      {name:"Xolo hard hat",site:"Orthen",lv:0,xp:0,mats:{"Goldrune":54,"Dragon metal":66}},
+      {name:"Xolo pickaxe",site:"Orthen",lv:0,xp:0,mats:{"Goldrune":36,"Dragon metal":50,"Orgone":34}},
+      {name:"Xolo shield",site:"Orthen",lv:0,xp:0,mats:{"Goldrune":52,"Orgone":44,"Felt":42}},
+      {name:"Xolo spear",site:"Orthen",lv:0,xp:0,mats:{"Dragon metal":74,"Orgone":64}},
+      {name:"Gold dish",site:"Orthen",lv:0,xp:0,mats:{"Goldrune":86,"Dragon metal":54}},
+      {name:"'Raksha' idol",site:"Orthen",lv:0,xp:0,mats:{"Orgone":56,"Dragon metal":44,"Goldrune":40}},
     ];
     const STORAGE_ORDER = [
       "Third Age iron","Samite silk","White oak","Goldrune","Orthenglass",
@@ -1116,7 +1130,7 @@
       // General Bentnoze
       {collector:"General Bentnoze",name:"Red Rum Relics I",lv:94,artefacts:["Ork cleaver sword","Ogre Kyzaj axe","Beastkeeper helm","'Nosorog!' sculpture"]},
       {collector:"General Bentnoze",name:"Red Rum Relics II",lv:110,artefacts:["Ourg megahitter","Ourg tower/goblin cower shield","'Forged in War' sculpture","Hobgoblin mansticker"]},
-      {collector:"General Bentnoze",name:"Red Rum Relics III",lv:119,artefacts:["Kal-i-kra chieftain crown","Kal-i-kra mace","Kal-i-kra warhorn","'Da Boss Man' sculpture"]},
+      {collector:"General Bentnoze",name:"Red Rum Relics III",lv:119,artefacts:["Kal-i-kra chieftan crown","Kal-i-kra mace","Kal-i-kra warhorn","'Da Boss Man' sculpture"]},
       
       // General Wartface
       {collector:"General Wartface",name:"Green Gobbo Goodies I",lv:83,artefacts:["Ekeleshuun blinder mask","Narogoshuun 'Hob-da-Gob' ball","Rekeshuun war tether","Thorobshuun battle standard","Yurkolgokh stink grenade"]},
@@ -1130,7 +1144,7 @@
       {collector:"Isaura",name:"Zamorakian I",lv:36,artefacts:["Hookah pipe","Opulent wine goblet","Crest of Dagon","'Disorder' painting","Imp mask","Lesser demon mask","Greater demon mask","Order of Dis robes","Ritual dagger"]},
       {collector:"Isaura",name:"Zamorakian II",lv:81,artefacts:["Branding iron","Manacles","'The Lake of Fire' painting","'Lust' metal sculpture","Chaos star","Spiked dog collar","Larupia trophy","Lion trophy","She-wolf trophy"]},
       {collector:"Isaura",name:"Zamorakian III",lv:104,artefacts:["'Torment' metal sculpture","'Pandemonium' tapestry","Hellfire haladie","Hellfire katar","Hellfire zaghnal","'Possession' metal sculpture","Trishula","Tsutsaroth piercing"]},
-      {collector:"Isaura",name:"Zamorakian IV",lv:116,artefacts:["Chaos Elemental trophy","Virius trophy","Tsutsaroth Helm","Tsutsaroth pauldron","Tsutsaroth urumi"]},
+      {collector:"Isaura",name:"Zamorakian IV",lv:116,artefacts:["Chaos Elemental trophy","Virius trophy","Tsutsaroth helm","Tsutsaroth pauldron","Tsutsaroth urumi"]},
       
       // Lowse
       {collector:"Lowse",name:"Armadylean I",lv:81,artefacts:["Ikovian gerege","Toy glider","Toy war golem","Avian song-egg player","Keshik drum","Morin khuur","Aviansie dreamcoat","Ceremonial plume","Peacocking parasol"]},
@@ -1150,25 +1164,25 @@
       {collector:"Sir Atcha",name:"Saradominist I",lv:56,artefacts:["'Frying pan'","Hallowed lantern","Ceremonial unicorn ornament","Ceremonial unicorn saddle","Everlight harp","Everlight trumpet","Everlight violin","Folded-arm figurine (female)","Folded-arm figurine (male)"]},
       {collector:"Sir Atcha",name:"Saradominist II",lv:72,artefacts:["Dominion discus","Dominion javelin","Dominion pelte shield","Bronze Dominion medal","Silver Dominion medal","Dominion torch","Decorative vase","Kantharos cup","Patera bowl"]},
       {collector:"Sir Atcha",name:"Saradominist III",lv:100,artefacts:["Dominarian device","Fishing trident","Amphora","Rod of Asclepius","Kopis dagger","Xiphos short sword"]},
-      {collector:"Sir Atcha",name:"Saradominist IV",lv:117,artefacts:["Hallowed Be the Everlight' painting","'The Lord of Light' painting","'The Pride of Padosan' painting","'The Enlightened Soul' scroll","'The Eudoxian Elements' tablet","Doru spear","Kontos lance"]},
+      {collector:"Sir Atcha",name:"Saradominist IV",lv:117,artefacts:["'Hallowed Be the Everlight' painting","'The Lord of Light' painting","'The Pride of Padosan' painting","'The Enlightened Soul' scroll","'The Eudoxian Elements' tablet","Doru spear","Kontos lance"]},
       
       // Soran
       {collector:"Soran",name:"Zarosian I",lv:25,artefacts:["Venator dagger","Venator light crossbow","Primis Elementis standard","Legionary gladius","Legionary square shield","Zaros effigy","Zarosian training dummy","Legatus Maximus figurine","'Solem in Umbra' painting"]},
       {collector:"Soran",name:"Zarosian II",lv:81,artefacts:["Ancient timepiece","Legatus pendant","'Incite Fear' spell scroll","Pontifex signet ring","Ceremonial mace","Pontifex Maximus figurine","'Consensus ad Idem' painting","Pontifex censer","Pontifex crozier","Pontifex mitre"]},
-      {collector:"Soran",name:"Zarosian III",lv:107,artefacts:["'Exsanguinate' spell scroll","Necromantic focus","Zarosian ewer","Zarosian stein","'Smoke Cloud' spell scroll","Vigorem vial","Ancient magic tablet","'Animate Dead' spell scroll	","Portable phylactery"]},
-      {collector:"Soran",name:"Zarosian IV",lv:118,artefacts:["Praetorian hood","Praetorian robes","Praetorian staff","Ancient globe","Battle plans","'Prima legio' painting"]},
+      {collector:"Soran",name:"Zarosian III",lv:107,artefacts:["'Exsanguinate' spell scroll","Necromantic focus","Zarosian ewer","Zarosian stein","'Smoke Cloud' spell scroll","Vigorem vial","Ancient magic tablet","'Animate Dead' spell scroll","Portable phylactery"]},
+      {collector:"Soran",name:"Zarosian IV",lv:118,artefacts:["Praetorian hood","Praetorian robe","Praetorian staff","Ancient globe","Battle plans","'Prima legio' painting"]},
       
       // Velucia - Museum collections//
 
       // Velucia - Museum - Armadylean
-      {collector:"Velucia",name:"Museum - Armadylean I",lv:81,artefacts:["Ikovian gerege","Toy glider","Toy war golem","Avian song-egg playe","Keshik drum","Morin khuur","Aviansie dreamcoat","Ceremonial plume","Peacocking parasol"]},
+      {collector:"Velucia",name:"Museum - Armadylean I",lv:81,artefacts:["Ikovian gerege","Toy glider","Toy war golem","Avian song-egg player","Keshik drum","Morin khuur","Aviansie dreamcoat","Ceremonial plume","Peacocking parasol"]},
       {collector:"Velucia",name:"Museum - Armadylean II",lv:98,artefacts:["Hawkeye lens multi-vision scope","Talon-3 razor wing","Prototype gravimeter","Songbird recorder","Dayguard shield","Stormguard gerege","Golem heart","Golem instruction"]},
-      {collector:"Velucia",name:"Museum - Armadylean III",lv:118,artefacts:["Blackfire lance","Nightguard shield","Flatcap","Night owl flight goggles","Prototype godbow","Prototype godstaff","Prototype godsword","Chuluu stone","Quintessence counter","Spherical astrolabe"]},
+      {collector:"Velucia",name:"Museum - Armadylean III",lv:118,artefacts:["Blackfire lance","Nightguard shield","Flat cap","Night owl flight goggles","Prototype godbow","Prototype godstaff","Prototype godsword","Chuluu stone","Quintessence counter","Spherical astrolabe"]},
 
       // Velucia - Museum - Bandosian
       {collector:"Velucia",name:"Museum - Bandosian I",lv:89,artefacts:["Ekeleshuun blinder mask","Narogoshuun 'Hob-da-Gob' ball","Rekeshuun war tether","Ogre Kyzaj axe","Ork cleaver sword","Thorobshuun battle standard","Yurkolgokh stink grenade","High priest crozier","High priest mitre","High priest orb"]},
       {collector:"Velucia",name:"Museum - Bandosian II",lv:100,artefacts:["Beastkeeper helm","Idithuun horn ring","'Nosorog!' sculpture","Ourg megahitter","Ourg tower/goblin cower shield","Garagorshuun anchor","Garagorshuun spear","'Forged in War' sculpture"]},
-      {collector:"Velucia",name:"Museum - Bandosian III",lv:119,artefacts:["Huzamogaarb chaos crown","Saragorgak star crown","Drogokishuun hook sword","Hobgoblin mansticker","Kal-i-kra chieftain crown","Kal-i-kra mace","Kal-i-kra warhorn","'Da Boss Man' sculpture","Horogothgar cooking pot"]},
+      {collector:"Velucia",name:"Museum - Bandosian III",lv:119,artefacts:["Huzamogaarb chaos crown","Saragorgak star crown","Drogokishuun hook sword","Hobgoblin mansticker","Kal-i-kra chieftan crown","Kal-i-kra mace","Kal-i-kra warhorn","'Da Boss Man' sculpture","Horogothgar cooking pot"]},
 
       // Velucia - Museum - Dragonkin
       {collector:"Velucia",name:"Museum - Dragonkin I",lv:99,artefacts:["Pasaha","Ritual bell","Kilaya","Vazara","Death mask","Dragonkin calendar","Dragonkin staff"]},
@@ -1181,7 +1195,7 @@
 
       // Velucia - Museum - Saradomist
       {collector:"Velucia",name:"Museum - Saradominist I",lv:56,artefacts:["'Frying pan'","Hallowed lantern","Ceremonial unicorn ornament","Ceremonial unicorn saddle","Everlight harp","Everlight trumpet","Everlight violin","Folded-arm figurine (female)","Folded-arm figurine (male)"]},
-      {collector:"Velucia",name:"Museum - Saradominist II",lv:72,artefacts:["Dominion discus","Dominion javelin","Dominion pelte shield","Bronze Dominion medal","Silver Dominion medal","Dominion torch","Dominion vase","Kantharos cup","Patera bowl"]},
+      {collector:"Velucia",name:"Museum - Saradominist II",lv:72,artefacts:["Dominion discus","Dominion javelin","Dominion pelte shield","Bronze Dominion medal","Silver Dominion medal","Dominion torch","Decorative vase","Kantharos cup","Patera bowl"]},
       {collector:"Velucia",name:"Museum - Saradominist III",lv:100,artefacts:["Dominarian device","Fishing trident","Amphora","Rod of Asclepius","Kopis dagger","Xiphos short sword"]},
       {collector:"Velucia",name:"Museum - Saradominist IV",lv:117,artefacts:["'Hallowed Be the Everlight' painting","'The Lord of Light' painting","'The Pride of Padosan' painting","'The Enlightened Soul' scroll","'The Eudoxian Elements' tablet","Doru spear","Kontos lance"]},
 
@@ -1193,9 +1207,9 @@
 
       // Velucia - Museum - Zarosian
       {collector:"Velucia",name:"Museum - Zarosian I",lv:25,artefacts:["Venator dagger","Venator light crossbow","Primis Elementis standard","Legionary gladius","Legionary square shield","Zaros effigy","Zarosian training dummy","Legatus Maximus figurine","'Solem in Umbra' painting"]},  
-      {collector:"Velucia",name:"Museum - Zarosian II",lv:81,artefacts:["Ancient timepiece","Legatus pendant","	'Incite Fear' spell scroll","Pontifex signet ring","Ceremonial mace","Pontifex Maximus figurine","'Consensus ad Idem' painting","Funerary urn of blood","Pontifex crozier","Pontifex mitre"]},
+      {collector:"Velucia",name:"Museum - Zarosian II",lv:81,artefacts:["Ancient timepiece","Legatus pendant","'Incite Fear' spell scroll","Pontifex signet ring","Ceremonial mace","Pontifex Maximus figurine","'Consensus ad Idem' painting","Funerary urn of blood","Pontifex crozier","Pontifex mitre"]},
       {collector:"Velucia",name:"Museum - Zarosian III",lv:107,artefacts:["'Exsanguinate' spell scroll","Necromantic focus","Zarosian ewer","Zarosian stein","'Smoke Cloud' spell scroll","Vigorem vial","Ancient magic tablet","'Animate Dead' spell scroll","Portable phylactery"]},
-      {collector:"Velucia",name:"Museum - Zarosian IV",lv:118,artefacts:["Praetorian hood","Praetorian robes","Praetorian staff","Ancient globe","Battle plans","'Prima Legio' painting"]},
+      {collector:"Velucia",name:"Museum - Zarosian IV",lv:118,artefacts:["Praetorian hood","Praetorian robe","Praetorian staff","Ancient globe","Battle plans","'Prima legio' painting"]},
       {collector:"Velucia",name:"Museum - Zarosian V",lv:62,artefacts:["Apex cap","Curse tablet","Funerary urn of shadow","Infula robes","Funerary urn of smoke","Hand of the Ancients"]},
       {collector:"Velucia",name:"Museum - Zarosian VI",lv:64,artefacts:["Decorative amphora","Funerary urn of ice","Loarnab rod","Inquisitor's ceremonial armour","Inquisitor's ceremonial mask","Inquisitor's seal"]},   
       {collector:"Velucia",name:"Museum - Zarosian VII",lv:67,artefacts:["Gladiator helmet","Gladiator sword","Funerary urn of blood","Funerary urn of miasma","Model chariot","'The Serpent's Fall' carving"]},   
@@ -1203,7 +1217,7 @@
       // Wise Old Man
       {collector:"Wise Old Man",name:"Wise Am the Music Man",lv:91,artefacts:["Everlight harp","Everlight trumpet","Everlight violin","Avian song-egg player","Keshik drum","Morin khuur","Songbird recorder"]},     
       {collector:"Wise Old Man",name:"Hat Problem",lv:114,artefacts:["Imp mask","Ekeleshuun blinder mask","High priest mitre","Beastkeeper helm","Huzamogaarb chaos crown","Flat cap","Praetorian hood"]},      
-      {collector:"Wise Old Man",name:"Hat Hoarder",lv:116,artefacts:["Lesser demon mask","Greater demon mask","Ceremonial unicorn ornament","	Pontifex mitre","Saragorgak star crown","Kal-i-kra chieftain crown","Tsutsaroth helm"]},      
+      {collector:"Wise Old Man",name:"Hat Hoarder",lv:116,artefacts:["Lesser demon mask","Greater demon mask","Ceremonial unicorn ornament","Pontifex mitre","Saragorgak star crown","Kal-i-kra chieftan crown","Tsutsaroth helm"]},      
       {collector:"Wise Old Man",name:"Magic Man",lv:118,artefacts:["Legatus Maximus figurine","Ritual dagger","Ancient timepiece","'Incite Fear' spell scroll","'Exsanguinate' spell scroll","High priest mitre","'Smoke Cloud' spell scroll","'Animate Dead' spell scroll","Portable phylactery","Chuluu stone"]},
       {collector:"Wise Old Man",name:"Knowledge is Power",lv:119,artefacts:["	Crest of Dagon","Ikovian gerege","Necromantic focus","Golem instruction","'The Enlightened Soul' scroll","'The Eudoxian Elements' tablet","'Da Boss Man' sculpture"]},
     ];
