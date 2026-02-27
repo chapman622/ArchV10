@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <title>Arch Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <script src="https://www.unpkg.com/alt1/dist/base/index.js"></script>
+  <script src="https://www.unpkg.com/alt1/dist/ocr/index.js"></script>
+  <script src="https://www.unpkg.com/alt1/dist/chatbox/index.js"></script>
+  <style>
+    :root {
+      --bg: #0c0b09; --surface: #141210; --surface2: #1c1a14;
+      --border: #2e2618; --border2: #3d3220; --accent: #c8952a;
+      --accent2: #8fbf6a; --accent3: #5ba8d4; --dim: #6b5b3e;
+      --text: #e8dcc8; --muted: #7a6a50; --danger: #bf4a3a;
+      --zarosian: #9b59b6; --zamorakian: #c0392b; --saradominist: #2980b9;
+      --armadylean: #27ae60; --bandosian: #d35400; --dragonkin: #c0006a; --agnostic: #7f8c8d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 11px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    header { background: linear-gradient(135deg, #1a1510, #221c12, #1a1510); border-bottom: 1px solid var(--accent); padding: 5px 9px; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    header h1 { font-family: 'Cinzel', serif; font-size: 13px; color: var(--accent); letter-spacing: .08em; flex: 1; }
+    .badge { font-size: 9px; color: var(--muted); border: 1px solid var(--border2); padding: 1px 5px; border-radius: 2px; }
+    .badge.ok { color: var(--accent2); border-color: var(--accent2); }
+    .tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .tab { flex: 1; padding: 5px 0; text-align: center; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all .15s; font-size: 9px; letter-spacing: .05em; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .toolbar { display: flex; gap: 4px; padding: 4px 7px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; align-items: center; flex-wrap: wrap; }
+    .toolbar input[type=text], .toolbar input[type=number] { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 3px 5px; font-family: inherit; font-size: 10px; border-radius: 2px; }
+    .toolbar input:focus { outline: none; border-color: var(--accent); }
+    select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 3px 4px; font-family: inherit; font-size: 10px; border-radius: 2px; }
+    .f1 { flex: 1; min-width: 70px; }
+    .btn { background: var(--border); border: 1px solid var(--border2); color: var(--text); padding: 3px 7px; font-family: inherit; font-size: 10px; cursor: pointer; border-radius: 2px; transition: background .1s; white-space: nowrap; }
+    .btn:hover { background: var(--border2); }
+    .btn.pri { background: #2e2008; border-color: var(--accent); color: var(--accent); }
+    .btn.pri:hover { background: #3e2e0c; }
+    .btn.suc { background: #0d2008; border-color: var(--accent2); color: var(--accent2); }
+    .btn.suc:hover { background: #1a3010; }
+    .btn.dan { background: #200808; border-color: var(--danger); color: var(--danger); }
+    .btn-xs { background: var(--border); border: none; color: var(--text); width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 2px; font-size: 13px; line-height: 1; flex-shrink: 0; }
+    .btn-xs:hover { background: var(--dim); }
+    .panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+    .panel.active { display: flex; }
+    .scroll { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) var(--bg); }
+    .scroll::-webkit-scrollbar { width: 4px; }
+    .scroll::-webkit-scrollbar-track { background: var(--bg); }
+    .scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: var(--surface); color: var(--muted); font-size: 9px; padding: 4px 6px; text-align: left; position: sticky; top: 0; z-index: 2; border-bottom: 1px solid var(--border); letter-spacing: .06em; }
+    tbody tr { border-bottom: 1px solid #18160f; }
+    tbody tr:nth-child(even) { background: #0f0d09; }
+    tbody tr:hover { background: #1a1810; }
+    td { padding: 3px 6px; vertical-align: middle; }
+    .cdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .mn { display: flex; align-items: center; gap: 5px; }
+    .cc { display: flex; align-items: center; justify-content: flex-end; gap: 2px; }
+    .ci { width: 50px; background: var(--bg); border: 1px solid var(--accent); color: var(--accent); text-align: right; font-family: inherit; font-size: 10px; padding: 1px 3px; border-radius: 2px; }
+    .ci:focus { outline: none; }
+    .gi { width: 50px; background: var(--bg); border: 1px solid var(--border); color: var(--text); text-align: right; font-family: inherit; font-size: 10px; padding: 1px 3px; border-radius: 2px; }
+    .gi:focus { outline: none; border-color: var(--accent); }
+    .pw { width: 46px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .pb { height: 100%; border-radius: 2px; transition: width .3s; }
+    .pb.low { background: var(--danger); } .pb.mid { background: var(--accent); } .pb.full { background: var(--accent2); }
+    .art-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; margin: 5px; padding: 7px; }
+    .art-head { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+    .art-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--accent); flex: 1; }
+    .art-lvl { font-size: 9px; color: var(--muted); background: var(--border); padding: 1px 5px; border-radius: 2px; }
+    .art-xp { font-size: 9px; color: var(--accent3); }
+    .mr { display: flex; align-items: center; gap: 5px; padding: 2px 0; font-size: 10px; }
+    .mr .need { color: var(--muted); margin-left: auto; white-space: nowrap; }
+    .mr .have { font-weight: bold; }
+    .mr.ok .have { color: var(--accent2); } .mr.bad .have { color: var(--danger); }
+    .art-note { font-size: 9px; color: var(--accent); background: #1a1206; border: 1px solid #3d2e08; border-radius: 2px; padding: 2px 5px; margin-bottom: 4px; }
+    .art-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; padding-top: 4px; border-top: 1px solid var(--border); }
+    .art-can { color: var(--accent2); font-size: 10px; } .art-cant { color: var(--danger); font-size: 10px; }
+    .site-hdr { background: var(--surface); padding: 4px 8px; font-family: 'Cinzel', serif; font-size: 10px; color: var(--accent2); border-bottom: 1px solid var(--border); letter-spacing: .08em; position: sticky; top: 0; z-index: 1; }
+    .sg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 7px; }
+    .sc { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 7px; }
+    .sc h3 { font-family: 'Cinzel', serif; font-size: 10px; color: var(--accent); margin-bottom: 5px; }
+    .sr { display: flex; justify-content: space-between; padding: 2px 0; font-size: 10px; border-bottom: 1px solid var(--border); }
+    .sr:last-child { border-bottom: none; }
+    .sv { color: var(--accent); } .sw { grid-column: 1 / -1; }
+    .oa { padding: 8px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1; }
+    .op { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 6px; min-height: 60px; font-size: 10px; color: var(--text); white-space: pre-wrap; font-family: inherit; overflow-y: auto; max-height: 150px; }
+    .oh { color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .status-bar { background: var(--surface); border-top: 1px solid var(--border); padding: 3px 9px; font-size: 9px; color: var(--muted); display: flex; gap: 10px; flex-shrink: 0; }
+    .status-bar span { color: var(--text); }
+    .legend { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 7px; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .li { display: flex; align-items: center; gap: 3px; font-size: 9px; color: var(--muted); }
+    textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 10px; padding: 6px; border-radius: 3px; resize: vertical; min-height: 60px; }
+    textarea:focus { outline: none; border-color: var(--accent); }
+    .tin { width: 42px; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 2px 3px; font-family: inherit; font-size: 9px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏛 Arch Tracker</h1>
+    <div class="badge" id="alt1-badge">Alt1 not detected</div>
+  </header>
+  <div class="tabs">
+    <div class="tab active" data-tab="inv">MATS</div>
+    <div class="tab" data-tab="art">ARTEFACTS</div>
+    <div class="tab" data-tab="chat">CHAT</div>
+    <div class="tab" data-tab="ocr">OCR</div>
+  </div>
+  <div class="panel active" id="panel-inv">
+    <div class="toolbar">
+      <input type="text" id="search-box" class="f1" placeholder="Search..."/>
+      <select id="filter-culture">
+        <option value="">All cultures</option>
+        <option>Agnostic</option><option>Zarosian</option><option>Zamorakian</option>
+        <option>Saradominist</option><option>Armadylean</option><option>Bandosian</option><option>Dragonkin</option>
+      </select>
+      <button class="btn dan" id="btn-reset-all">Reset</button>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr>
+        <th>Material</th><th style="text-align:center;width:24px">Lv</th>
+        <th style="text-align:right">Have</th><th style="text-align:right;width:56px">Goal</th>
+        <th style="text-align:right;width:56px">Prog</th>
+      </tr></thead>
+      <tbody id="mat-tbody"></tbody>
+    </table></div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="panel" id="panel-art">
+    <div class="toolbar">
+      <input type="text" id="art-search" class="f1" placeholder="Search artefacts..."/>
+      <select id="art-site">
+        <option value="">All sites</option>
+        <option>Kharid-et</option><option>Infernal Source</option><option>Everlight</option>
+        <option>Stormguard Citadel</option><option>Warforge</option>
+        <option>Orthen</option><option>Various</option>
+      </select>
+      <select id="art-filter">
+        <option value="">All</option><option value="can">Can restore</option><option value="cant">Missing mats</option>
+      </select>
+    </div>
+    <div class="scroll" id="art-scroll"></div>
+  </div>
+  <div class="panel" id="panel-chat">
+    <div class="toolbar">
+      <button class="btn suc" id="btn-chat-toggle">▶ Start Tracking</button>
+      <select id="chat-box-select" style="margin-left:4px"><option value="">Searching...</option></select>
+      <span id="chat-status" style="color:var(--muted);font-size:9px;margin-left:auto">Not tracking</span>
+    </div>
+    <div class="oa">
+      <p class="oh">Reads your chat box and automatically increments material counts when you find materials while excavating. Handles normal finds, auto-screener, porter/imp-souled, and Fortune/Balarak procs.</p>
+      <div style="font-size:9px;color:var(--accent);margin-bottom:2px">RECENT DETECTIONS</div>
+      <div id="chat-log" style="flex:1;overflow-y:auto;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:6px;font-size:10px;min-height:80px">
+        <span style="color:var(--muted)">No materials detected yet.</span>
+      </div>
+    </div>
+  </div>
+  <div class="panel" id="panel-ocr">
+    <div class="oa">
+      <p class="oh">
+        1. Open Material Storage in RS3 and scroll to TOP<br>
+        2. Set window coordinates, Validate alignment<br>
+        3. Tuners → Preview Top Boxes — blue should surround icons, green cover numbers<br>
+        4. Adjust until perfect, then Scan Top<br>
+        5. Scroll down until Dragonkin visible → Scan Bottom<br>
+        6. Review detected values, then Apply to Inventory
+      </p>
+      <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+        <button class="btn" id="btn-locate">📍 Locate Window</button>
+        <span id="locate-status" style="font-size:9px;color:var(--muted)">Window not set</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btn-show-tuners">⚙ Tuners</button>
+        <button class="btn pri" id="btn-scan-top">📸 Scan Top</button>
+        <button class="btn pri" id="btn-scan-bottom">📸 Scan Bottom</button>
+        <button class="btn" id="btn-manual-ocr">✏ Manual Paste</button>
+      </div>
+      <div id="tuner-wrap" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:6px">
+        <div style="font-size:9px;color:var(--accent);margin-bottom:4px">OFFSET TUNERS — adjust until blue boxes surround icons & green covers quantity numbers</div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:9px;color:var(--muted);margin-bottom:4px">
+          offX:<input class="tin" id="t-ox" type="number" value="10">
+          offY (top):<input class="tin" id="t-oy" type="number" value="66">
+          offY (bottom):<input class="tin" id="t-oy2" type="number" value="-132">
+          step (horiz):<input class="tin" id="t-step" type="number" value="46">
+          row (vert):<input class="tin" id="t-row" type="number" value="70">
+          icon px:<input class="tin" id="t-icon" type="number" value="42">
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="btn suc" id="t-rescan" style="font-size:9px;padding:2px 5px">▶ Re-Scan Top</button>
+          <button class="btn suc" id="t-rescan-bot" style="font-size:9px;padding:2px 5px">▶ Re-Scan Bottom</button>
+          <button class="btn" id="t-preview-top" style="font-size:9px;padding:2px 5px">👁 Preview Top Boxes</button>
+          <button class="btn" id="t-preview-bot" style="font-size:9px;padding:2px 5px">👁 Preview Bottom Boxes</button>
+          <button class="btn" id="t-debug-px" style="font-size:9px;padding:2px 5px">🔬 Debug Pixels</button>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-top:4px">Blue = icon area. Green = number read zone. Tune until aligned.</div>
+      </div>
+      <textarea id="paste-box" placeholder="Paste material text here..." style="display:none"></textarea>
+      <button class="btn" id="btn-parse-paste" style="display:none">Parse Text</button>
+      <div class="op" id="ocr-out">No scan yet.</div>
+      <div id="ocr-results" style="display:none">
+        <div style="color:var(--accent2);font-size:10px;margin-bottom:4px" id="ocr-summary"></div>
+        <div id="ocr-match-list" style="font-size:10px;max-height:100px;overflow-y:auto;margin-bottom:6px"></div>
+        <div style="display:flex;gap:5px">
+          <button class="btn suc" id="btn-ocr-apply">✔ Apply to Inventory</button>
+          <button class="btn" id="btn-ocr-discard">✖ Discard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <div>Total: <span id="s-total">0</span></div>
+    <div>In stock: <span id="s-types">0</span></div>
+    <div>Goals: <span id="s-goals">0/0</span></div>
+    <div>Can restore: <span id="s-canrest">0</span></div>
+  </div>
+  <script>
+    const CULTURE_COL = {
+      Agnostic:"#7f8c8d", Zarosian:"#9b59b6", Zamorakian:"#c0392b",
+      Saradominist:"#2980b9", Armadylean:"#27ae60", Bandosian:"#d35400",
+      Dragonkin:"#c0006a", Unknown:"#888888"
+    };
+    const MATS = [
+      {name:"Third Age iron",lv:5,c:"Agnostic"},{name:"Samite silk",lv:12,c:"Agnostic"},
+      {name:"White oak",lv:17,c:"Agnostic"},{name:"Goldrune",lv:20,c:"Agnostic"},
+      {name:"Orthenglass",lv:20,c:"Agnostic"},{name:"Vellum",lv:24,c:"Agnostic"},
+      {name:"Leather scraps",lv:29,c:"Agnostic"},{name:"Soapstone",lv:60,c:"Agnostic"},
+      {name:"Animal furs",lv:76,c:"Agnostic"},{name:"Fossilised bone",lv:81,c:"Agnostic"},
+      {name:"Stormguard steel",lv:70,c:"Armadylean"},{name:"Wings of War",lv:70,c:"Armadylean"},
+      {name:"Armadylean yellow",lv:76,c:"Armadylean"},{name:"Aetherium alloy",lv:85,c:"Armadylean"},
+      {name:"Quintessence",lv:91,c:"Armadylean"},{name:"Malachite green",lv:76,c:"Bandosian"},
+      {name:"Mark of the Kyzaj",lv:76,c:"Bandosian"},{name:"Vulcanised rubber",lv:76,c:"Bandosian"},
+      {name:"Warforged bronze",lv:93,c:"Bandosian"},{name:"Yu'biusk clay",lv:83,c:"Bandosian"},
+      {name:"Dragon metal",lv:73,c:"Dragonkin"},{name:"Orgone",lv:73,c:"Dragonkin"},
+      {name:"Compass rose",lv:77,c:"Dragonkin"},{name:"Carbon black",lv:78,c:"Dragonkin"},
+      {name:"Felt",lv:78,c:"Dragonkin"},{name:"Keramos",lv:42,c:"Saradominist"},
+      {name:"White marble",lv:42,c:"Saradominist"},{name:"Cobalt blue",lv:48,c:"Saradominist"},
+      {name:"Everlight silvthril",lv:51,c:"Saradominist"},{name:"Star of Saradomin",lv:51,c:"Saradominist"},
+      {name:"Cadmium red",lv:24,c:"Zamorakian"},{name:"Chaotic brimstone",lv:29,c:"Zamorakian"},
+      {name:"Demonhide",lv:29,c:"Zamorakian"},{name:"Eye of Dagon",lv:36,c:"Zamorakian"},
+      {name:"Hellfire metal",lv:36,c:"Zamorakian"},{name:"Zarosian insignia",lv:5,c:"Zarosian"},
+      {name:"Imperial steel",lv:12,c:"Zarosian"},{name:"Ancient vis",lv:25,c:"Zarosian"},
+      {name:"Tyrian purple",lv:25,c:"Zarosian"},{name:"Blood of Orcus",lv:58,c:"Zarosian"},
+    ];
+    const ARTEFACTS = [
+      // ── Kharid-et ──────────────────────────────────────────────────────────
+      {name:"Centurion's dress sword",site:"Kharid-et",lv:1,xp:250,note:"NOTE: Tutorial only",mats:{"Third Age iron":5,"Purpleheart wood":5}},
+      {name:"Venator dagger",site:"Kharid-et",lv:5,xp:305,mats:{"Third Age iron":16,"Zarosian insignia":12}},
+      {name:"Venator light crossbow",site:"Kharid-et",lv:5,xp:305,mats:{"Third Age iron":12,"Zarosian insignia":16}},
+      {name:"Centurion's seal",site:"Kharid-et",lv:12,xp:431,note:"NOTE: Required for Breaking the Seal mystery",mats:{"Third Age iron":6,"Zarosian insignia":2}},
+      {name:"Primis Elementis standard",site:"Kharid-et",lv:12,xp:431,mats:{"Samite silk":16,"Third Age iron":12}},
+      {name:"Legionary gladius",site:"Kharid-et",lv:12,xp:431,mats:{"Third Age iron":10,"Zarosian insignia":6,"Imperial steel":12}},
+      {name:"Legionary square shield",site:"Kharid-et",lv:12,xp:431,mats:{"Third Age iron":8,"Zarosian insignia":8,"Imperial steel":12}},
+      {name:"Zaros effigy",site:"Kharid-et",lv:17,xp:521,mats:{"Samite silk":8,"White oak":10,"Zarosian insignia":12}},
+      {name:"Zarosian training dummy",site:"Kharid-et",lv:17,xp:521,mats:{"Third Age iron":16,"White oak":14}},
+      {name:"Hookah pipe",site:"Infernal Source",lv:20,xp:574,mats:{"Third Age iron":10,"Goldrune":12,"Orthenglass":8}},
+      {name:"Opulent wine goblet",site:"Infernal Source",lv:20,xp:574,mats:{"Third Age iron":14,"Goldrune":16}},
+      {name:"Crest of Dagon",site:"Infernal Source",lv:24,xp:646,mats:{"Goldrune":14,"Orthenglass":18}},
+      {name:"'Disorder' painting",site:"Infernal Source",lv:24,xp:646,mats:{"Samite silk":6,"White oak":6,"Vellum":6,"Cadmium red":14}},
+      {name:"Legatus Maximus figurine",site:"Kharid-et",lv:25,xp:664,mats:{"Goldrune":8,"Zarosian insignia":14,"Ancient vis":10}},
+      {name:"'Solem in Umbra' painting",site:"Kharid-et",lv:25,xp:664,mats:{"Samite silk":8,"White oak":10,"Tyrian purple":14}},
+      {name:"Imp mask",site:"Infernal Source",lv:29,xp:736,mats:{"Leather scraps":10,"Chaotic brimstone":10,"Demonhide":12}},
+      {name:"Lesser demon mask",site:"Infernal Source",lv:29,xp:736,mats:{"Leather scraps":6,"Chaotic brimstone":8,"Demonhide":12,"Cadmium red":6}},
+      {name:"Greater demon mask",site:"Infernal Source",lv:29,xp:736,mats:{"Third Age iron":6,"Leather scraps":6,"Chaotic brimstone":8,"Demonhide":12}},
+      {name:"Teleportation crystal",site:"Kharid-et",lv:30,xp:233,note:"NOTE: Required for Osseous Rex quest",mats:{"Orthenglass":20}},
+      {name:"Order of Dis robes",site:"Infernal Source",lv:36,xp:862,mats:{"Samite silk":16,"Cadmium red":10,"Eye of Dagon":14}},
+      {name:"Ritual dagger",site:"Infernal Source",lv:36,xp:862,mats:{"Goldrune":16,"Hellfire metal":24,"Ruby":1}},
+      {name:"'Frying pan'",site:"Everlight",lv:42,xp:1073,mats:{"Third Age iron":20,"White marble":24}},
+      {name:"Hallowed lantern",site:"Everlight",lv:42,xp:1073,mats:{"Third Age iron":20,"Keramos":24,"White candle":1}},
+      {name:"Branding iron",site:"Infernal Source",lv:45,xp:1283,mats:{"Third Age iron":14,"Eye of Dagon":12,"Hellfire metal":20}},
+      {name:"Manacles",site:"Infernal Source",lv:45,xp:1283,mats:{"Third Age iron":14,"Chaotic brimstone":18,"Eye of Dagon":14}},
+      {name:"Ancient timepiece",site:"Kharid-et",lv:47,xp:1423,mats:{"Goldrune":12,"Imperial steel":16,"Ancient vis":18}},
+      {name:"Legatus pendant",site:"Kharid-et",lv:47,xp:1423,mats:{"Third Age iron":16,"Goldrune":18,"Ancient vis":12,"Dragonstone":1}},
+      {name:"Ceremonial unicorn ornament",site:"Everlight",lv:48,xp:1493,mats:{"Keramos":26,"Cobalt blue":20}},
+      {name:"Ceremonial unicorn saddle",site:"Everlight",lv:48,xp:1493,mats:{"Leather scraps":24,"Cobalt blue":22}},
+      {name:"Dragonkin device",site:"Orthen",lv:50,xp:600,note:"NOTE: Required for Desperate Measures quest",mats:{"Orthenglass":50}},
+      {name:"Dragonkin tablet",site:"Orthen",lv:50,xp:600,note:"NOTE: Required for Desperate Measures quest",mats:{"Orthenglass":50}},
+      {name:"Tetracompass (unpowered)",site:"Various",lv:50,xp:2065,note:"NOTE: Used to find ancient caskets",mats:{"Malachite green":30,"Cadmium red":30,"Cobalt blue":30,"Armadylean yellow":30,"Tyrian purple":30}},
+      {name:"Everlight harp",site:"Everlight",lv:51,xp:1703,mats:{"Everlight silvthril":30,"White oak":22}},
+      {name:"Everlight trumpet",site:"Everlight",lv:51,xp:1703,mats:{"Everlight silvthril":28,"Goldrune":24}},
+      {name:"Everlight violin",site:"Everlight",lv:51,xp:1703,mats:{"Star of Saradomin":16,"White oak":20,"Samite silk":16}},
+      {name:"'Incite Fear' spell scroll",site:"Kharid-et",lv:58,xp:2193,mats:{"Vellum":20,"Ancient vis":18,"Blood of Orcus":18}},
+      {name:"Pontifex signet ring",site:"Kharid-et",lv:58,xp:2193,mats:{"Third Age iron":16,"Goldrune":18,"Ancient vis":22,"Dragonstone":1}},
+      {name:"Folded-arm figurine (female)",site:"Everlight",lv:56,xp:2053,mats:{"White marble":30,"Goldrune":24}},
+      {name:"Folded-arm figurine (male)",site:"Everlight",lv:56,xp:2053,mats:{"White marble":30,"Goldrune":24}},
+      {name:"Apex cap",site:"Kharid-et",lv:60,xp:2193,mats:{"Samite silk":28,"Leather scraps":12,"Ancient vis":20}},
+      {name:"Curse tablet",site:"Kharid-et",lv:60,xp:2333,mats:{"Imperial steel":16,"Zarosian insignia":12,"Soapstone":20,"Blood of Orcus":12}},
+      {name:"Funerary urn of shadow",site:"Kharid-et",lv:60,xp:2333,mats:{"Soapstone":26,"Tyrian purple":14,"Ancient vis":20}},
+      {name:"Dominion discus",site:"Everlight",lv:61,xp:2567,mats:{"Keramos":34,"Star of Saradomin":28}},
+      {name:"Dominion javelin",site:"Everlight",lv:61,xp:2567,mats:{"Keramos":32,"Third Age iron":30}},
+      {name:"Dominion pelte shield",site:"Everlight",lv:61,xp:2567,mats:{"Star of Saradomin":34,"Samite silk":28}},
+      {name:"Infula robes",site:"Kharid-et",lv:62,xp:2800,mats:{"Samite silk":26,"Leather scraps":12,"Goldrune":12,"Tyrian purple":12}},
+      {name:"Funerary urn of smoke",site:"Kharid-et",lv:62,xp:2800,mats:{"Soapstone":28,"Tyrian purple":14,"Ancient vis":20}},
+      {name:"Hand of the Ancients",site:"Kharid-et",lv:62,xp:2800,mats:{"Blood of Orcus":12,"White oak":18,"Ancient vis":14,"Goldrune":18}},
+      {name:"Decorative amphora",site:"Kharid-et",lv:63,xp:3033,mats:{"Tyrian purple":16,"Ancient vis":18,"Soapstone":28}},
+      {name:"Funerary urn of ice",site:"Kharid-et",lv:63,xp:3033,mats:{"Soapstone":28,"Tyrian purple":14,"Ancient vis":20}},
+      {name:"Loarnab rod",site:"Kharid-et",lv:63,xp:3033,mats:{"White oak":28,"Blood of Orcus":16,"Imperial steel":18}},
+      {name:"Inquisitor's ceremonial armour",site:"Kharid-et",lv:64,xp:3267,mats:{"Leather scraps":14,"Samite silk":30,"Tyrian purple":18}},
+      {name:"Inquisitor's ceremonial mask",site:"Kharid-et",lv:64,xp:3267,mats:{"Ancient vis":14,"Leather scraps":12,"Blood of Orcus":14,"Samite silk":22}},
+      {name:"Inquisitor's seal",site:"Kharid-et",lv:64,xp:3267,mats:{"Tyrian purple":14,"Zarosian insignia":20,"Ancient vis":14,"Goldrune":14}},
+      {name:"'The Lake of Fire' painting",site:"Infernal Source",lv:65,xp:3500,mats:{"Samite silk":10,"White oak":10,"Vellum":10,"Cadmium red":34}},
+      {name:"'Lust' metal sculpture",site:"Infernal Source",lv:65,xp:3500,mats:{"Third Age iron":16,"Eye of Dagon":24,"Goldrune":24,"Ruby":1}},
+      {name:"Gladiator helmet",site:"Kharid-et",lv:66,xp:3773,mats:{"Imperial steel":30,"Blood of Orcus":16,"Leather scraps":18}},
+      {name:"Gladiator sword",site:"Kharid-et",lv:66,xp:3773,mats:{"Imperial steel":30,"Goldrune":18,"Zarosian insignia":16}},
+      {name:"Funerary urn of blood",site:"Kharid-et",lv:66,xp:3773,mats:{"Soapstone":30,"Tyrian purple":14,"Blood of Orcus":20}},
+      {name:"Funerary urn of miasma",site:"Kharid-et",lv:67,xp:3967,mats:{"Soapstone":30,"Tyrian purple":14,"Ancient vis":20}},
+      {name:"Model chariot",site:"Kharid-et",lv:67,xp:3967,mats:{"Vellum":12,"Imperial steel":18,"Goldrune":20,"Zarosian insignia":14}},
+      {name:"'The Serpent's Fall' carving",site:"Kharid-et",lv:67,xp:3967,mats:{"Vellum":16,"Tyrian purple":24,"Blood of Orcus":12,"White oak":12}},
+      {name:"Chaos star",site:"Infernal Source",lv:68,xp:4200,mats:{"Chaotic brimstone":28,"Hellfire metal":36}},
+      {name:"Spiked dog collar",site:"Infernal Source",lv:68,xp:4200,mats:{"Third Age iron":24,"Leather scraps":24,"Chaotic brimstone":16}},
+      {name:"Bronze Dominion medal",site:"Everlight",lv:69,xp:4433,mats:{"Everlight silvthril":36,"Star of Saradomin":26,"Bronze bar":1}},
+      {name:"Silver Dominion medal",site:"Everlight",lv:69,xp:4433,mats:{"Everlight silvthril":36,"Star of Saradomin":26,"Silver bar":1}},
+      {name:"Dominion torch",site:"Everlight",lv:69,xp:4433,mats:{"Goldrune":12,"Orthenglass":12,"Everlight silvthril":20,"Star of Saradomin":18}},
+      {name:"Ikovian gerege",site:"Stormguard Citadel",lv:70,xp:4667,mats:{"Third Age iron":36,"Wings of War":30}},
+      {name:"Toy glider",site:"Stormguard Citadel",lv:70,xp:4667,mats:{"Stormguard steel":36,"White oak":30}},
+      {name:"Toy war golem",site:"Stormguard Citadel",lv:70,xp:4667,mats:{"Third Age iron":36,"White oak":30,"Clockwork":1}},
+      {name:"Ceremonial dragonkin device",site:"Orthen",lv:70,xp:4667,mats:{"Orthenglass":66}},
+      {name:"Decorative vase",site:"Everlight",lv:72,xp:5133,mats:{"White marble":36,"Cobalt blue":30}},
+      {name:"Kantharos cup",site:"Everlight",lv:72,xp:5133,mats:{"Everlight silvthril":30,"Orthenglass":36,"Sapphire":1}},
+      {name:"Patera bowl",site:"Everlight",lv:72,xp:5133,mats:{"Keramos":36,"Goldrune":30,"Sapphire":1}},
+      {name:"Castle gatestone",site:"Orthen",lv:73,xp:5367,mats:{"Orgone":36,"Orthenglass":32}},
+      {name:"Engraved ring of kinship",site:"Orthen",lv:73,xp:5367,mats:{"Goldrune":28,"Dragon metal":40}},
+      {name:"Ceremonial mace",site:"Kharid-et",lv:74,xp:5600,mats:{"Imperial steel":20,"Third Age iron":20,"Goldrune":28}},
+      {name:"Pontifex Maximus figurine",site:"Kharid-et",lv:74,xp:5600,mats:{"Zarosian insignia":24,"Ancient vis":16,"Goldrune":28,"Dragonstone":1}},
+      {name:"'Consensus ad Idem' painting",site:"Kharid-et",lv:74,xp:5600,mats:{"White oak":10,"Samite silk":10,"Tyrian purple":50}},
+      {name:"Wingsuit v1",site:"Stormguard Citadel",lv:76,xp:10000,note:"NOTE: Required to traverse Stormguard Citadel",mats:{"Samite silk":40,"Leather scraps":20,"Stormguard steel":9,"Armadylean yellow":1}},
+      {name:"Avian song-egg player",site:"Stormguard Citadel",lv:76,xp:6067,mats:{"Stormguard steel":36,"Armadylean yellow":32,"Diamond":1}},
+      {name:"Keshik drum",site:"Stormguard Citadel",lv:76,xp:6067,mats:{"Wings of War":16,"Animal furs":16,"White oak":20,"Leather scraps":16}},
+      {name:"Morin khuur",site:"Stormguard Citadel",lv:76,xp:6067,mats:{"Armadylean yellow":36,"White oak":32}},
+      {name:"Ekeleshuun blinder mask",site:"Warforge",lv:76,xp:6067,mats:{"Vulcanised rubber":24,"Malachite green":20,"Vellum":24}},
+      {name:"Narogoshuun 'Hob-da-Gob' ball",site:"Warforge",lv:76,xp:6067,mats:{"Vulcanised rubber":36,"Mark of the Kyzaj":32}},
+      {name:"Rekeshuun war tether",site:"Warforge",lv:76,xp:6067,mats:{"Warforged bronze":20,"Vulcanised rubber":22,"Leather scraps":26}},
+      {name:"Exploratory totem",site:"Orthen",lv:77,xp:6300,mats:{"Dragon metal":34,"Compass rose":36}},
+      {name:"Excavator portal mine",site:"Orthen",lv:77,xp:5367,mats:{"Orgone":36,"Orthenglass":34}},
+      {name:"Storage totem",site:"Orthen",lv:78,xp:6533,mats:{"Dragon metal":36,"Compass rose":34}},
+      {name:"Plant seed satchel",site:"Orthen",lv:78,xp:6533,mats:{"Felt":28,"Carbon black":28,"Compass rose":14}},
+      {name:"Snuff box",site:"Orthen",lv:78,xp:6533,mats:{"Soapstone":20,"Carbon black":30,"Felt":20}},
+      {name:"Aviansie dreamcoat",site:"Stormguard Citadel",lv:81,xp:7389,mats:{"Armadylean yellow":20,"Samite silk":30,"Animal furs":22}},
+      {name:"Ceremonial plume",site:"Stormguard Citadel",lv:81,xp:7389,mats:{"Armadylean yellow":38,"Goldrune":34,"Phoenix feather":1}},
+      {name:"Peacocking parasol",site:"Stormguard Citadel",lv:81,xp:7389,mats:{"Armadylean yellow":22,"Samite silk":30,"White oak":20}},
+      {name:"Ogre Kyzaj axe",site:"Warforge",lv:81,xp:7389,mats:{"Warforged bronze":28,"Mark of the Kyzaj":20,"Fossilised bone":24}},
+      {name:"Ork cleaver sword",site:"Warforge",lv:81,xp:7389,mats:{"Warforged bronze":36,"Fossilised bone":36}},
+      {name:"Larupia trophy",site:"Infernal Source",lv:81,xp:7389,mats:{"Cadmium red":18,"Animal furs":28,"Orthenglass":26}},
+      {name:"Lion trophy",site:"Infernal Source",lv:81,xp:7389,mats:{"Cadmium red":18,"Animal furs":28,"White oak":26}},
+      {name:"She-wolf trophy",site:"Infernal Source",lv:81,xp:7389,mats:{"Chaotic brimstone":26,"Cadmium red":18,"Animal furs":28}},
+      {name:"Pontifex censer",site:"Kharid-et",lv:81,xp:7389,mats:{"Third Age iron":20,"Ancient vis":20,"Goldrune":32,"Dragonstone":1}},
+      {name:"Pontifex crozier",site:"Kharid-et",lv:81,xp:7389,mats:{"Imperial steel":20,"Zarosian insignia":20,"Goldrune":32}},
+      {name:"Pontifex mitre",site:"Kharid-et",lv:81,xp:7389,mats:{"Samite silk":32,"Ancient vis":20,"Zarosian insignia":20}},
+      {name:"Thorobshuun battle standard",site:"Warforge",lv:83,xp:8167,mats:{"Mark of the Kyzaj":16,"Malachite green":22,"White oak":16,"Samite silk":20}},
+      {name:"Yurkolgokh stink grenade",site:"Warforge",lv:83,xp:8167,mats:{"Yu'biusk clay":38,"Vulcanised rubber":36,"Weapon poison (3)":1}},
+      {name:"Dominarian device",site:"Everlight",lv:84,xp:8556,mats:{"Everlight silvthril":30,"Keramos":22,"Third Age iron":22,"Clockwork":1}},
+      {name:"Fishing trident",site:"Everlight",lv:84,xp:8556,mats:{"Star of Saradomin":22,"Third Age iron":30,"Goldrune":22}},
+      {name:"Hawkeye lens multi-vision scope",site:"Stormguard Citadel",lv:85,xp:8944,mats:{"Stormguard steel":40,"Orthenglass":34}},
+      {name:"Talon-3 razor wing",site:"Stormguard Citadel",lv:85,xp:8944,mats:{"Aetherium alloy":40,"Wings of War":34,"Rope":1}},
+      {name:"'Exsanguinate' spell scroll",site:"Kharid-et",lv:86,xp:9333,mats:{"Vellum":40,"Blood of Orcus":36}},
+      {name:"Necromantic focus",site:"Kharid-et",lv:86,xp:9333,mats:{"Imperial steel":20,"Blood of Orcus":26,"Ancient vis":30}},
+      {name:"Spent summoning charm",site:"Orthen",lv:87,xp:9722,mats:{"Orgone":46,"Felt":30}},
+      {name:"'Friendship bracelet'",site:"Orthen",lv:87,xp:9722,mats:{"Soapstone":30,"Felt":46}},
+      {name:"Homely totem",site:"Orthen",lv:87,xp:9722,mats:{"Soapstone":36,"Felt":40}},
+      {name:"High priest crozier",site:"Warforge",lv:89,xp:10500,mats:{"Mark of the Kyzaj":26,"Malachite green":24,"Goldrune":28}},
+      {name:"High priest mitre",site:"Warforge",lv:89,xp:10500,mats:{"Mark of the Kyzaj":26,"Malachite green":24,"Samite silk":28}},
+      {name:"High priest orb",site:"Warforge",lv:89,xp:10500,mats:{"Mark of the Kyzaj":26,"Malachite green":24,"Goldrune":28}},
+      {name:"'Torment' metal sculpture",site:"Infernal Source",lv:89,xp:10500,mats:{"Eye of Dagon":20,"Third Age iron":20,"Hellfire metal":38}},
+      {name:"'Pandemonium' tapestry",site:"Infernal Source",lv:89,xp:10500,mats:{"White oak":12,"Samite silk":12,"Vellum":12,"Cadmium red":42}},
+      {name:"Ceremonial dragonkin tablet",site:"Orthen",lv:90,xp:10889,mats:{"Orthenglass":79}},
+      {name:"Pasaha",site:"Orthen",lv:90,xp:10889,mats:{"Felt":40,"Goldrune":38}},
+      {name:"Ritual bell",site:"Orthen",lv:90,xp:10889,mats:{"Goldrune":40,"Compass rose":38}},
+      {name:"Prototype gravimeter",site:"Stormguard Citadel",lv:91,xp:11278,mats:{"Quintessence":34,"Leather scraps":20,"Third Age iron":26}},
+      {name:"Songbird recorder",site:"Stormguard Citadel",lv:91,xp:11278,mats:{"Stormguard steel":44,"Orthenglass":36,"Diamond":1}},
+      {name:"Amphora",site:"Everlight",lv:92,xp:11667,mats:{"Everlight silvthril":34,"Keramos":46}},
+      {name:"Rod of Asclepius",site:"Everlight",lv:92,xp:11667,mats:{"White marble":30,"Star of Saradomin":24,"Goldrune":26}},
+      {name:"Zarosian ewer",site:"Kharid-et",lv:93,xp:12500,mats:{"Third Age iron":52,"Zarosian insignia":30}},
+      {name:"Zarosian stein",site:"Kharid-et",lv:93,xp:12500,mats:{"Third Age iron":16,"Imperial steel":36,"Zarosian insignia":30}},
+      {name:"Beastkeeper helm",site:"Warforge",lv:94,xp:13333,mats:{"Warforged bronze":16,"Vulcanised rubber":24,"Animal furs":20,"Fossilised bone":24}},
+      {name:"Idithuun horn ring",site:"Warforge",lv:94,xp:13333,mats:{"Yu'biusk clay":40,"Vulcanised rubber":44}},
+      {name:"'Nosorog!' sculpture",site:"Warforge",lv:94,xp:13333,mats:{"Yu'biusk clay":30,"Malachite green":24,"Warforged bronze":30}},
+      {name:"Dayguard shield",site:"Stormguard Citadel",lv:95,xp:14167,mats:{"Stormguard steel":36,"Wings of War":28,"White oak":20}},
+      {name:"Stormguard gerege",site:"Stormguard Citadel",lv:95,xp:14167,mats:{"Stormguard steel":36,"Wings of War":28,"Goldrune":20}},
+      {name:"Kilaya",site:"Orthen",lv:96,xp:15000,mats:{"Dragon metal":46,"Compass rose":40}},
+      {name:"Vazara",site:"Orthen",lv:96,xp:15000,mats:{"Dragon metal":30,"Compass rose":28,"Goldrune":28}},
+      {name:"Ourg megahitter",site:"Warforge",lv:97,xp:15833,mats:{"White oak":20,"Leather scraps":20,"Orthenglass":26,"Malachite green":22}},
+      {name:"Ourg tower/goblin cower shield",site:"Warforge",lv:97,xp:15833,mats:{"Mark of the Kyzaj":20,"Third Age iron":26,"Leather scraps":22,"White oak":20}},
+      {name:"Garagorshuun anchor",site:"Warforge",lv:97,xp:15833,mats:{"Warforged bronze":32,"Mark of the Kyzaj":26,"Third Age iron":30}},
+      {name:"Golem heart",site:"Stormguard Citadel",lv:98,xp:16667,mats:{"Aetherium alloy":34,"Quintessence":24,"Orthenglass":16,"Soapstone":16}},
+      {name:"Golem instruction",site:"Stormguard Citadel",lv:98,xp:16667,mats:{"Quintessence":46,"Vellum":44,"Black mushroom ink":1}},
+      {name:"Hellfire haladie",site:"Infernal Source",lv:98,xp:16667,mats:{"Hellfire metal":44,"Third Age iron":26,"Leather scraps":20}},
+      {name:"Hellfire katar",site:"Infernal Source",lv:98,xp:16667,mats:{"Hellfire metal":50,"Leather scraps":40}},
+      {name:"Hellfire zaghnal",site:"Infernal Source",lv:98,xp:16667,mats:{"Hellfire metal":38,"White oak":26,"Orthenglass":26}},
+      {name:"Death mask",site:"Orthen",lv:99,xp:17500,mats:{"Orgone":56,"Soapstone":34}},
+      {name:"Dragonkin calendar",site:"Orthen",lv:99,xp:17500,mats:{"Orgone":34,"Carbon black":28,"Compass rose":28}},
+      {name:"Dragonkin staff",site:"Orthen",lv:99,xp:17500,mats:{"Orgone":56,"Compass rose":34}},
+      {name:"Dorgeshuun spear",site:"Warforge",lv:100,xp:18667,mats:{"Warforged bronze":50,"White oak":42}},
+      {name:"'Forged in War' sculpture",site:"Warforge",lv:100,xp:18667,mats:{"Warforged bronze":50,"Yu'biusk clay":42,"Emerald":1}},
+      {name:"Kopis dagger",site:"Everlight",lv:100,xp:18667,mats:{"Everlight silvthril":50,"Leather scraps":42}},
+      {name:"Xiphos short sword",site:"Everlight",lv:100,xp:18667,mats:{"Everlight silvthril":46,"Leather scraps":46}},
+      {name:"'Smoke Cloud' spell scroll",site:"Kharid-et",lv:100,xp:18667,mats:{"Vellum":40,"Ancient vis":20,"Blood of Orcus":32}},
+      {name:"Vigorem vial",site:"Kharid-et",lv:100,xp:18667,mats:{"Imperial steel":54,"Ancient vis":38,"Molten glass":1}},
+      {name:"Dragon scalpel",site:"Orthen",lv:101,xp:19833,mats:{"Dragon metal":52,"Felt":42}},
+      {name:"Protective goggles",site:"Orthen",lv:101,xp:19833,mats:{"Felt":42,"Orthenglass":52}},
+      {name:"Dragon burner",site:"Orthen",lv:102,xp:21000,mats:{"Dragon metal":52,"Orgone":42}},
+      {name:"Orthenglass flask",site:"Orthen",lv:102,xp:21000,mats:{"Dragon metal":34,"Orthenglass":60}},
+      {name:"Blackfire lance",site:"Stormguard Citadel",lv:103,xp:22167,mats:{"Aetherium alloy":50,"Quintessence":46}},
+      {name:"Nightguard shield",site:"Stormguard Citadel",lv:103,xp:22167,mats:{"Stormguard steel":30,"Wings of War":36,"White oak":30}},
+      {name:"Projection attuner",site:"Orthen",lv:103,xp:22167,mats:{"Goldrune":28,"Orthenglass":28,"Dragon metal":40}},
+      {name:"Golden projection 'needle'",site:"Orthen",lv:103,xp:22167,mats:{"Goldrune":36,"Dragon metal":60}},
+      {name:"Huzamogaarb chaos crown",site:"Warforge",lv:104,xp:23333,mats:{"Warforged bronze":44,"Third Age iron":34,"Eye of Dagon":20}},
+      {name:"Saragorgak star crown",site:"Warforge",lv:104,xp:23333,mats:{"Warforged bronze":44,"Third Age iron":34,"Star of Saradomin":20}},
+      {name:"'Possession' metal sculpture",site:"Infernal Source",lv:104,xp:23333,mats:{"Eye of Dagon":24,"Chaotic brimstone":30,"Third Age iron":44}},
+      {name:"Trishula",site:"Infernal Source",lv:104,xp:23333,mats:{"Hellfire metal":48,"Eye of Dagon":30,"Third Age iron":20}},
+      {name:"Tsutsaroth piercing",site:"Infernal Source",lv:104,xp:23333,mats:{"Hellfire metal":44,"Chaotic brimstone":30,"Cadmium red":24}},
+      {name:"'Hallowed Be the Everlight' painting",site:"Everlight",lv:105,xp:24500,mats:{"Cobalt blue":52,"White oak":16,"Samite silk":16,"Vellum":16}},
+      {name:"'The Lord of Light' painting",site:"Everlight",lv:105,xp:24500,mats:{"Cobalt blue":52,"White oak":16,"Samite silk":16,"Vellum":16}},
+      {name:"'The Pride of Padosan' painting",site:"Everlight",lv:105,xp:24500,mats:{"Cobalt blue":52,"White oak":16,"Samite silk":16,"Vellum":16}},
+      {name:"Meditation pipe",site:"Orthen",lv:106,xp:25667,mats:{"Orgone":60,"Dragon metal":40}},
+      {name:"Personal totem",site:"Orthen",lv:106,xp:25667,mats:{"Orgone":48,"Carbon black":26,"Compass rose":26}},
+      {name:"Singing bowl",site:"Orthen",lv:106,xp:25667,mats:{"Orgone":60,"Dragon metal":40}},
+      {name:"Ancient magic tablet",site:"Kharid-et",lv:107,xp:27000,mats:{"Ancient vis":40,"Blood of Orcus":64}},
+      {name:"'Animate Dead' spell scroll",site:"Kharid-et",lv:107,xp:27000,mats:{"Ancient vis":24,"Blood of Orcus":40,"Vellum":40}},
+      {name:"Portable phylactery",site:"Kharid-et",lv:107,xp:27000,mats:{"Ancient vis":20,"Blood of Orcus":36,"Imperial steel":48}},
+      {name:"'The Enlightened Soul' scroll",site:"Everlight",lv:109,xp:29667,mats:{"Star of Saradomin":50,"Vellum":60}},
+      {name:"'The Eudoxian Elements' tablet",site:"Everlight",lv:109,xp:29667,mats:{"Goldrune":50,"White marble":60}},
+      {name:"Chaos Elemental trophy",site:"Infernal Source",lv:110,xp:31000,mats:{"Chaotic brimstone":52,"Hellfire metal":30,"White oak":30}},
+      {name:"Virius trophy",site:"Infernal Source",lv:110,xp:31000,mats:{"Demonhide":44,"Orthenglass":34,"White oak":34}},
+      {name:"Drogokishuun hook sword",site:"Warforge",lv:110,xp:31000,mats:{"Fossilised bone":32,"Malachite green":36,"Warforged bronze":44}},
+      {name:"Hobgoblin mansticker",site:"Warforge",lv:110,xp:31000,mats:{"Fossilised bone":46,"Warforged bronze":66}},
+      {name:"Flat cap",site:"Stormguard Citadel",lv:111,xp:32333,mats:{"Armadylean yellow":60,"Samite silk":54}},
+      {name:"Night owl flight goggles",site:"Stormguard Citadel",lv:111,xp:32333,mats:{"Armadylean yellow":44,"Leather scraps":40,"Orthenglass":30}},
+      {name:"Prototype godbow",site:"Stormguard Citadel",lv:112,xp:33667,mats:{"Aetherium alloy":50,"Quintessence":34,"Wings of War":34}},
+      {name:"Prototype godstaff",site:"Stormguard Citadel",lv:112,xp:33667,mats:{"Aetherium alloy":50,"Quintessence":34,"Wings of War":34}},
+      {name:"Prototype godsword",site:"Stormguard Citadel",lv:112,xp:33667,mats:{"Aetherium alloy":50,"Goldrune":34,"Quintessence":34}},
+      {name:"Praetorian hood",site:"Kharid-et",lv:114,xp:36667,mats:{"Ancient vis":36,"Samite silk":48,"Zarosian insignia":40,"Death runes":30}},
+      {name:"Praetorian robe",site:"Kharid-et",lv:114,xp:36667,mats:{"Ancient vis":30,"Samite silk":54,"Zarosian insignia":40,"Death runes":50}},
+      {name:"Praetorian staff",site:"Kharid-et",lv:114,xp:36667,mats:{"Ancient vis":58,"Imperial steel":36,"Zarosian insignia":30,"Death runes":100}},
+      {name:"Kal-i-kra chieftan crown",site:"Warforge",lv:115,xp:38333,mats:{"Animal furs":60,"Yu'biusk clay":66}},
+      {name:"Kal-i-kra mace",site:"Warforge",lv:115,xp:38333,mats:{"Fossilised bone":40,"Third Age iron":44,"Vulcanised rubber":42}},
+      {name:"Kal-i-kra warhorn",site:"Warforge",lv:115,xp:38333,mats:{"Animal furs":40,"Fossilised bone":42,"Vulcanised rubber":44}},
+      {name:"Tsutsaroth helm",site:"Infernal Source",lv:116,xp:40000,mats:{"Eye of Dagon":40,"Goldrune":40,"Hellfire metal":50}},
+      {name:"Tsutsaroth pauldron",site:"Infernal Source",lv:116,xp:40000,mats:{"Eye of Dagon":40,"Goldrune":50,"Hellfire metal":40}},
+      {name:"Tsutsaroth urumi",site:"Infernal Source",lv:116,xp:40000,mats:{"Eye of Dagon":40,"Hellfire metal":50,"Third Age iron":40}},
+      {name:"Doru spear",site:"Everlight",lv:117,xp:41667,mats:{"Everlight silvthril":70,"White oak":62}},
+      {name:"Kontos lance",site:"Everlight",lv:117,xp:41667,mats:{"Everlight silvthril":70,"Samite silk":62}},
+      {name:"Ancient globe",site:"Kharid-et",lv:118,xp:43333,mats:{"Ancient vis":60,"Tyrian purple":54,"White oak":20}},
+      {name:"Battle plans",site:"Kharid-et",lv:118,xp:43333,mats:{"Ancient vis":34,"Tyrian purple":60,"Vellum":40}},
+      {name:"'Prima legio' painting",site:"Kharid-et",lv:118,xp:43333,mats:{"Samite silk":20,"Tyrian purple":74,"White oak":20,"Zarosian insignia":20}},
+      {name:"Chuluu stone",site:"Stormguard Citadel",lv:118,xp:43333,mats:{"Aetherium alloy":40,"Goldrune":24,"Quintessence":30,"Soapstone":40}},
+      {name:"Quintessence counter",site:"Stormguard Citadel",lv:118,xp:43333,mats:{"Quintessence":54,"Stormguard steel":40,"White oak":40}},
+      {name:"Spherical astrolabe",site:"Stormguard Citadel",lv:118,xp:43333,mats:{"Aetherium alloy":46,"Armadylean yellow":40,"Orthenglass":48}},
+    ];
+    const STORAGE_ORDER = [
+      "Third Age iron","Samite silk","White oak","Goldrune","Orthenglass",
+      "Vellum","Leather scraps","Soapstone","Animal furs","Fossilised bone",
+      "Stormguard steel","Wings of War","Armadylean yellow","Aetherium alloy","Quintessence",
+      "Malachite green","Mark of the Kyzaj","Vulcanised rubber","Warforged bronze","Yu'biusk clay",
+      "Dragon metal","Orgone","Compass rose","Carbon black","Felt",
+      "Keramos","White marble","Cobalt blue","Everlight silvthril","Star of Saradomin",
+      "Cadmium red","Chaotic brimstone","Demonhide","Eye of Dagon","Hellfire metal",
+      "Zarosian insignia","Imperial steel","Ancient vis","Tyrian purple","Blood of Orcus"
+    ];
+    const KEY = "archtracker_v4";
+    let S = {counts:{}, goals:{}, session:null};
+    let ocrParsed = {};
+    let storedWinX = parseInt(localStorage.getItem("archStorageWinX")) || null;
+    let storedWinY = parseInt(localStorage.getItem("archStorageWinY")) || null;
+    let storedWinWidth = parseInt(localStorage.getItem("archStorageWinWidth")) || 500;
+    let storedWinHeight = parseInt(localStorage.getItem("archStorageWinHeight")) || 342;
+    let offsetX=10, offsetY=66, offsetY2=-132, horizStep=46, rowStep=70, iconSize=42;
+
+    function loadTuners() {
+      const s = JSON.parse(localStorage.getItem("archOcrTuners") || "{}");
+      offsetX=s.offsetX??10; offsetY=s.offsetY??66; offsetY2=s.offsetY2??-132;
+      horizStep=s.horizStep??46; rowStep=s.rowStep??70; iconSize=s.iconSize??42;
+      document.getElementById("t-ox").value=offsetX;
+      document.getElementById("t-oy").value=offsetY;
+      document.getElementById("t-oy2").value=offsetY2;
+      document.getElementById("t-step").value=horizStep;
+      document.getElementById("t-row").value=rowStep;
+      document.getElementById("t-icon").value=iconSize;
+    }
+    function saveTuners() {
+      localStorage.setItem("archOcrTuners", JSON.stringify({offsetX,offsetY,offsetY2,horizStep,rowStep,iconSize}));
+    }
+    ["t-ox","t-oy","t-oy2","t-step","t-row","t-icon"].forEach(id => {
+      document.getElementById(id).addEventListener("input", e => {
+        const v = parseInt(e.target.value)||0;
+        if(id==="t-ox") offsetX=v; if(id==="t-oy") offsetY=v; if(id==="t-oy2") offsetY2=v;
+        if(id==="t-step") horizStep=v; if(id==="t-row") rowStep=v; if(id==="t-icon") iconSize=v;
+        saveTuners();
+      });
+    });
+    document.getElementById("t-rescan").addEventListener("click", scanTop);
+    document.getElementById("t-rescan-bot").addEventListener("click", scanBottom);
+
+    function previewBoxes(startIdx, endIdx, useOffsetY) {
+      if (!storedWinX||!storedWinY) { document.getElementById("ocr-out").textContent="Locate window first."; return; }
+      const absX=storedWinX, absY=storedWinY;
+      alt1.overLayRect(A1lib.mixColor(255,200,0), absX, absY, storedWinWidth, storedWinHeight, 8000, 2);
+      const rowDefs=[{slots:10},{slots:5},{slots:5},{slots:5},{slots:5},{slots:5},{slots:5}];
+      let storageIdx=0;
+      for (let rowIdx=0; rowIdx<rowDefs.length; rowIdx++) {
+        const row=rowDefs[rowIdx];
+        const iconTop=absY+useOffsetY+(rowIdx*rowStep)-14;
+        const numY=absY+useOffsetY+(rowIdx*rowStep);
+        for (let slot=0; slot<row.slots; slot++) {
+          const idx=storageIdx+slot;
+          if (idx>=STORAGE_ORDER.length) break;
+          const iconX=absX+offsetX+(slot*horizStep);
+          if (idx>=startIdx && idx<=endIdx) {
+            alt1.overLayRect(A1lib.mixColor(80,180,255), iconX, iconTop, iconSize, iconSize+14, 8000, 2);
+            alt1.overLayRect(A1lib.mixColor(0,255,0), iconX, numY-4, iconSize, 18, 8000, 2);
+          }
+        }
+        storageIdx+=row.slots;
+      }
+      alt1.overLayRefreshGroup("0");
+      document.getElementById("ocr-out").textContent="Blue=icon area, Green=number read zone. Tune until aligned.";
+    }
+    document.getElementById("t-preview-top").addEventListener("click", ()=>previewBoxes(0,19,offsetY));
+    document.getElementById("t-preview-bot").addEventListener("click", ()=>previewBoxes(20,39,offsetY2));
+    document.getElementById("t-debug-px").addEventListener("click", ()=>{
+      if (!storedWinX||!storedWinY) { document.getElementById("ocr-out").textContent="Locate window first."; return; }
+      const x=storedWinX+offsetX, y=storedWinY+offsetY;
+      const W=44, H=20;
+      const cap=A1lib.capture(x, y+4, W, H);
+      const data=cap.data, w=cap.width, h=cap.height;
+      let map="Pixel map (Y rows, X cols) — Y=yellow, .=dark:\n";
+      for (let py=0; py<h; py++) {
+        let row=`y${py}: `;
+        for (let px=0; px<w; px++) {
+          const i=(py*w+px)*4;
+          row += isGold(data[i],data[i+1],data[i+2]) ? "Y" : ".";
+        }
+        map+=row+"\n";
+      }
+      console.log(map);
+      document.getElementById("ocr-out").textContent=map;
+    });
+
+    function isGold(r,g,b) {
+      return r>180 && g>180 && b<130;
+    }
+
+    function readNumberAt(x, y) {
+      try {
+        const W=44, H=20;
+        const cap=A1lib.capture(x, y+4, W, H);
+        if (!cap||!cap.data) return null;
+        const data=cap.data, w=cap.width, h=cap.height;
+
+        function isY(px,py) {
+          if(px<0||px>=w||py<0||py>=h) return false;
+          const i=(py*w+px)*4;
+          return isGold(data[i],data[i+1],data[i+2]);
+        }
+
+        const cols=[];
+        for (let px=0; px<w; px++) {
+          let cnt=0;
+          for (let py=0; py<h; py++) { if(isY(px,py)) cnt++; }
+          cols.push(cnt);
+        }
+
+        const segs=[];
+        let inSeg=false, segStart=0;
+        for (let px=0; px<w; px++) {
+          if(cols[px]>0 && !inSeg) { inSeg=true; segStart=px; }
+          else if(cols[px]===0 && inSeg) { segs.push({s:segStart,e:px-1}); inSeg=false; }
+        }
+        if(inSeg) segs.push({s:segStart,e:w-1});
+
+        if(!segs.length) { console.log(`readNumberAt(${x},${y}): no pixels → 0`); return 0; }
+
+        let numStr="";
+        for (const seg of segs) {
+          const sw=seg.e-seg.s+1;
+          if(sw<=1) continue;
+
+          let topRow=h, botRow=-1;
+          for (let py=0; py<h; py++)
+            for (let px=seg.s; px<=seg.e; px++)
+              if(isY(px,py)) { if(py<topRow) topRow=py; if(py>botRow) botRow=py; }
+
+          const dh=botRow-topRow+1;
+
+          const midRow1=Math.round(topRow+dh*0.35);
+          const midRow2=Math.round(topRow+dh*0.45);
+          const midRow3=Math.round(topRow+dh*0.55);
+          let mb1=0,mb2=0,mb3=0;
+          for(let px=seg.s;px<=seg.e;px++) {
+            if(isY(px,midRow1)) mb1++;
+            if(isY(px,midRow2)) mb2++;
+            if(isY(px,midRow3)) mb3++;
+          }
+          const midBar = Math.min(mb1, mb2, mb3);
+          const midBarMax = Math.max(mb1, mb2, mb3);
+
+          let topBar=0; for(let px=seg.s;px<=seg.e;px++) if(isY(px,topRow)) topBar++;
+          let botBar=0; for(let px=seg.s;px<=seg.e;px++) if(isY(px,botRow)) botBar++;
+
+          let leftCnt=0;  for(let py=topRow;py<=botRow;py++) if(isY(seg.s,py)) leftCnt++;
+          let rightCnt=0; for(let py=topRow;py<=botRow;py++) if(isY(seg.e,py)) rightCnt++;
+
+          const tl=isY(seg.s,topRow+1)||isY(seg.s,topRow+2);
+          const bl=isY(seg.s,botRow-1)||isY(seg.s,botRow-2);
+          const tr=isY(seg.e,topRow+1)||isY(seg.e,topRow+2);
+          const br=isY(seg.e,botRow-1)||isY(seg.e,botRow-2);
+
+          const totalPx=cols.slice(seg.s,seg.e+1).reduce((a,b)=>a+b,0);
+          const density=totalPx/(sw*dh);
+
+          let digit="?";
+
+          if(sw<=3) {
+            digit="1";
+          } else if(topBar>=3 && midBarMax<=1 && botBar<=1) {
+            digit="7";
+          } else if(density<=0.36 && tl && bl && tr && br) {
+            digit="0";
+          } else if(tl && br && !tr && topBar>=3 && leftCnt>=4) {
+            digit="5";
+          } else if(leftCnt>=5 && botBar>=2 && midBarMax>=2 && topBar<=2) {
+            digit="6";
+          } else if(density>=0.44) {
+            digit="8";
+          } else if(midBarMax<=1) {
+            if(rightCnt>=4 && leftCnt<=3 && tr && br) {
+              digit="3";
+            } else {
+              digit = br ? "3" : "2";
+            }
+          } else {
+            if(rightCnt>=5 && tl && !bl) {
+              digit="9";
+            } else if(leftCnt>=5 && botBar>=2) {
+              digit="6";
+            } else if(leftCnt>=5 && botBar<=1) {
+              digit="4";
+            } else if(rightCnt>=4 && leftCnt<=3) {
+              digit="3";
+            } else if(tr && bl) {
+              digit="2";
+            } else {
+              digit="0";
+            }
+          }
+
+          console.log(`  seg x${seg.s}-${seg.e} w=${sw} top=${topBar} mb1=${mb1} mb2=${mb2} mb3=${mb3} midBar=${midBar} bot=${botBar} L=${leftCnt} R=${rightCnt} tl=${tl} bl=${bl} tr=${tr} br=${br} d=${density.toFixed(2)} → ${digit}`);
+          numStr+=digit;
+        }
+
+        const n=parseInt(numStr);
+        console.log(`readNumberAt(${x},${y}): str="${numStr}" n=${n}`);
+        return isNaN(n)?null:n;
+      } catch(e) {
+        console.log("readNumberAt error:",e);
+        return null;
+      }
+    }
+
+    async function performScan(startIdx, endIdx, label, useOffsetY) {
+      const out=document.getElementById("ocr-out");
+      if (!storedWinX||!storedWinY) { out.textContent="Locate window first."; return; }
+      const absX=storedWinX, absY=storedWinY;
+      out.textContent="Scanning "+label+"...";
+      alt1.overLayRect(A1lib.mixColor(255,200,0), absX, absY, storedWinWidth, storedWinHeight, 5000, 2);
+      const results={};
+      let good=0;
+      const rowDefs=[{slots:10},{slots:5},{slots:5},{slots:5},{slots:5},{slots:5},{slots:5}];
+      let storageIdx=0;
+      for (let rowIdx=0; rowIdx<rowDefs.length; rowIdx++) {
+        const row=rowDefs[rowIdx];
+        const numY=absY+useOffsetY+(rowIdx*rowStep);
+        const rowW=row.slots*horizStep;
+        const rowStart=storageIdx, rowEnd=storageIdx+row.slots-1;
+        if (rowEnd>=startIdx && rowStart<=endIdx) {
+          alt1.overLayRect(A1lib.mixColor(255,255,0), absX+offsetX, numY-4, rowW, 18, 4000, 1);
+        }
+        for (let slot=0; slot<row.slots; slot++) {
+          const idx=storageIdx+slot;
+          if (idx>=startIdx && idx<=endIdx) {
+            const mat=STORAGE_ORDER[idx];
+            if (mat) {
+              const numX=absX+offsetX+(slot*horizStep);
+              alt1.overLayRect(A1lib.mixColor(0,255,0), numX, numY-4, iconSize, 18, 4000, 1);
+              const num=readNumberAt(numX, numY);
+              if (num!==null) { results[mat]=num; good++; }
+              await new Promise(r=>setTimeout(r,100));
+            }
+          }
+        }
+        storageIdx+=row.slots;
+      }
+      alt1.overLayRefreshGroup("0");
+      Object.assign(ocrParsed, results);
+      showOCRRes(ocrParsed);
+      out.textContent="Added "+good+" from "+label+". Total: "+Object.keys(ocrParsed).length+". Apply when ready.";
+    }
+
+    function scanTop() { performScan(0,19,"Top (Agnostic+Armadylean+Bandosian)",offsetY); }
+    function scanBottom() { performScan(20,39,"Bottom (Dragonkin+Saradominist+Zamorakian+Zarosian)",offsetY2); }
+
+    function showOCRRes(parsed) {
+      const keys=Object.keys(parsed);
+      document.getElementById("ocr-summary").textContent=keys.length?"Detected "+keys.length+" materials:":"No values detected.";
+      document.getElementById("ocr-match-list").innerHTML=keys.map(k=>
+        `<div style='display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--border)'>
+          <span style='color:var(--accent2)'>${k}</span><span style='color:var(--accent)'>${parsed[k].toLocaleString()}</span>
+        </div>`).join("");
+      document.getElementById("ocr-results").style.display="block";
+    }
+
+    function startLocate() {
+      const status=document.getElementById("locate-status");
+      const btn=document.getElementById("btn-locate");
+      if (!window.alt1) { status.textContent="Alt1 not detected."; status.style.color="var(--danger)"; return; }
+      status.textContent="Searching..."; status.style.color="var(--muted)";
+      btn.disabled=true;
+      try {
+        const cap = A1lib.captureHoldFullRs();
+        const data = cap.read();
+        const W = data.width, H = data.height;
+
+        function isTitleColour(r,g,b) {
+          return Math.abs(r-154)<=10 && Math.abs(g-126)<=10 && Math.abs(b-78)<=10;
+        }
+
+        let foundY=-1, foundLeft=-1, foundRight=-1;
+        for (let y=0; y<H && foundY===-1; y++) {
+          const runs=[];
+          let runStart=-1;
+          for (let x=0; x<W; x++) {
+            const idx=(y*W+x)*4;
+            const match=isTitleColour(data.data[idx],data.data[idx+1],data.data[idx+2]);
+            if (match && runStart===-1) runStart=x;
+            if (!match && runStart!==-1) { runs.push({x:runStart,len:x-runStart}); runStart=-1; }
+          }
+          if (runStart!==-1) runs.push({x:runStart,len:W-runStart});
+          const sigRuns=runs.filter(r=>r.len>=50);
+          const totalLen=sigRuns.reduce((a,r)=>a+r.len,0);
+          if (sigRuns.length>=1 && totalLen>=400) {
+            foundY=y;
+            foundLeft=sigRuns[0].x;
+            foundRight=sigRuns[sigRuns.length-1].x+sigRuns[sigRuns.length-1].len-1;
+          }
+        }
+
+        if (foundY===-1) {
+          status.textContent="Not found — is Material Storage open?";
+          status.style.color="var(--danger)";
+          btn.disabled=false;
+          return;
+        }
+
+        const winX = foundLeft - 9;
+        const winY = foundY + 3;
+
+        storedWinX=winX; storedWinY=winY; storedWinWidth=500; storedWinHeight=342;
+        localStorage.setItem("archStorageWinX", winX);
+        localStorage.setItem("archStorageWinY", winY);
+        localStorage.setItem("archStorageWinWidth", 500);
+        localStorage.setItem("archStorageWinHeight", 342);
+        alt1.overLayRect(A1lib.mixColor(255,200,0), storedWinX, storedWinY, storedWinWidth, storedWinHeight, 5000, 2);
+        status.textContent="Found at ("+winX+", "+winY+") ✔";
+        status.style.color="var(--accent2)";
+      } catch(e) {
+        status.textContent="Error: "+e.message;
+        status.style.color="var(--danger)";
+        console.error("Locate error:", e);
+      }
+      btn.disabled=false;
+    }
+
+    function load() {
+      try { const s=localStorage.getItem(KEY); if(s) S=JSON.parse(s); } catch(e) {}
+      STORAGE_ORDER.forEach(name=>{ if(S.counts[name]==null)S.counts[name]=0; if(S.goals[name]==null)S.goals[name]=0; });
+      MATS.forEach(m=>{ if(S.counts[m.name]==null)S.counts[m.name]=0; if(S.goals[m.name]==null)S.goals[m.name]=0; });
+    }
+    function save() { localStorage.setItem(KEY, JSON.stringify(S)); updateStatus(); }
+
+    function renderMats() {
+      const tb=document.getElementById("mat-tbody"); tb.innerHTML="";
+      const allMats=STORAGE_ORDER.map(name=>{
+        const mat=MATS.find(m=>m.name===name);
+        return {name, lv:mat?mat.lv:"—", c:mat?mat.c:"Unknown", have:S.counts[name]||0, goal:S.goals[name]||0};
+      }).filter(mat=>{
+        const q=document.getElementById("search-box").value.toLowerCase();
+        const c=document.getElementById("filter-culture").value;
+        return (!c||mat.c===c)&&(!q||mat.name.toLowerCase().includes(q));
+      });
+      allMats.forEach(mat=>{
+        const pct=mat.goal>0?Math.min(100,Math.round(mat.have/mat.goal*100)):(mat.have>0?100:0);
+        const cls=mat.goal>0?(pct>=100?"full":pct>=50?"mid":"low"):"low";
+        const cc=CULTURE_COL[mat.c]||"#888888";
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td><div class='mn'><span class='cdot' style='background:${cc}'></span>${mat.name}${mat.c==="Unknown"?" <small>(extra)</small>":""}</div></td>
+          <td style='text-align:center;color:var(--muted)'>${mat.lv}</td>
+          <td><div class='cc'><button class='btn-xs' data-a='dec' data-n='${mat.name}'>−</button>
+          <input class='ci' type='number' min='0' value='${mat.have}' data-n='${mat.name}'>
+          <button class='btn-xs' data-a='inc' data-n='${mat.name}'>+</button></div></td>
+          <td><input class='gi' type='number' min='0' value='${mat.goal}' data-g='${mat.name}'></td>
+          <td style='text-align:right'><div class='pw' style='margin-left:auto'><div class='pb ${cls}' style='width:${pct}%'></div></div>
+          <div style='font-size:9px;color:var(--muted);text-align:right'>${mat.goal>0?pct+"%":"—"}</div></td>`;
+        tb.appendChild(tr);
+      });
+      if (!allMats.length) {
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td colspan="5" style="text-align:center;padding:12px;color:var(--muted);">No materials match.</td>`;
+        tb.appendChild(tr);
+      }
+    }
+    function renderLegend() {
+      document.getElementById("legend").innerHTML=Object.entries(CULTURE_COL).map(e=>
+        `<div class='li'><span class='cdot' style='background:${e[1]}'></span>${e[0]}</div>`).join("");
+    }
+    document.getElementById("mat-tbody").addEventListener("click", e=>{
+      const b=e.target.closest(".btn-xs"); if(!b) return;
+      const n=b.dataset.n;
+      if(b.dataset.a==="inc") S.counts[n]=(S.counts[n]||0)+1;
+      if(b.dataset.a==="dec") S.counts[n]=Math.max(0,(S.counts[n]||0)-1);
+      save(); renderMats(); renderArts();
+    });
+    document.getElementById("mat-tbody").addEventListener("change", e=>{
+      if(e.target.matches(".ci")) { S.counts[e.target.dataset.n]=Math.max(0,parseInt(e.target.value)||0); save(); renderMats(); renderArts(); }
+      if(e.target.matches(".gi")) { S.goals[e.target.dataset.g]=Math.max(0,parseInt(e.target.value)||0); save(); renderMats(); }
+    });
+    document.getElementById("search-box").addEventListener("input", renderMats);
+    document.getElementById("filter-culture").addEventListener("change", renderMats);
+    document.getElementById("btn-reset-all").addEventListener("click", ()=>{
+      if(!confirm("Reset ALL counts to 0?")) return;
+      Object.keys(S.counts).forEach(name=>{S.counts[name]=0;});
+      save(); renderMats(); renderArts();
+    });
+
+    function isMat(name) { return STORAGE_ORDER.includes(name); }
+    function canRestore(art) { return Object.entries(art.mats).filter(e=>isMat(e[0])).every(e=>(S.counts[e[0]]||0)>=e[1]); }
+    function matCulture(name) { const m=MATS.find(x=>x.name===name); return m?m.c:"Unknown"; }
+
+    function renderArts() {
+      const q=document.getElementById("art-search").value.toLowerCase();
+      const site=document.getElementById("art-site").value;
+      const f=document.getElementById("art-filter").value;
+      const filtered=ARTEFACTS.filter(a=>{
+        if(site&&a.site!==site) return false;
+        if(q&&!a.name.toLowerCase().includes(q)) return false;
+        if(f==="can"&&!canRestore(a)) return false;
+        if(f==="cant"&&canRestore(a)) return false;
+        return true;
+      });
+      const bySite={};
+      filtered.forEach(a=>{ if(!bySite[a.site])bySite[a.site]=[]; bySite[a.site].push(a); });
+      const scroll=document.getElementById("art-scroll"); scroll.innerHTML="";
+      if(!filtered.length) { scroll.innerHTML="<div style='padding:12px;color:var(--muted)'>No artefacts match.</div>"; return; }
+      Object.entries(bySite).forEach(se=>{
+        const hdr=document.createElement("div"); hdr.className="site-hdr"; hdr.textContent=se[0]; scroll.appendChild(hdr);
+        se[1].sort((a,b)=>a.lv-b.lv).forEach(art=>{
+          const can=canRestore(art);
+          const untracked=Object.entries(art.mats).filter(me=>!isMat(me[0]));
+          const matRows=Object.entries(art.mats).filter(me=>isMat(me[0])).map(me=>{
+            const have=S.counts[me[0]]||0, ok=have>=me[1];
+            return `<div class='mr ${ok?"ok":"bad"}'><span class='cdot' style='background:${CULTURE_COL[matCulture(me[0])]}'></span><span>${me[0]}</span><span class='need'><span class='have'>${have.toLocaleString()}</span> / ${me[1]}</span></div>`;
+          }).join("");
+          const card=document.createElement("div"); card.className="art-card";
+          const noteHtml=art.note?`<div class='art-note'>${art.note}</div>`:"";
+          const untrackedHtml=untracked.length?`<div class='art-note'>Requires ${untracked.map(me=>`${me[0]} ×${me[1]}`).join(", ")}</div>`:"";
+          card.innerHTML=`<div class='art-head'><span class='art-name'>${art.name}</span><span class='art-lvl'>Lv ${art.lv}</span><span class='art-xp'>${art.xp.toLocaleString()} xp</span></div>
+            ${noteHtml}${untrackedHtml}${matRows}<div class='art-footer'><span class='${can?"art-can":"art-cant"}'>${can?"✔ Can restore":"✖ Missing mats"}</span>
+            ${can?`<button class='btn suc' style='font-size:9px;padding:2px 6px' data-restore='${art.name}'>Restore →</button>`:""}</div>`;
+          scroll.appendChild(card);
+        });
+      });
+      scroll.querySelectorAll("[data-restore]").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const art=ARTEFACTS.find(a=>a.name===b.dataset.restore);
+          if(!art||!canRestore(art)) return;
+          Object.entries(art.mats).filter(e=>isMat(e[0])).forEach(e=>{ S.counts[e[0]]=Math.max(0,(S.counts[e[0]]||0)-e[1]); });
+          save(); renderMats(); renderArts();
+        });
+      });
+    }
+    document.getElementById("art-search").addEventListener("input", renderArts);
+    document.getElementById("art-site").addEventListener("change", renderArts);
+    document.getElementById("art-filter").addEventListener("change", renderArts);
+
+    // ── CHAT TRACKER ─────────────────────────────────────────────────────────
+    let chatReader = null;
+    let chatInterval = null;
+    let chatTracking = false;
+    const timestampRegex = /\[\d{2}:\d{2}:\d{2}\]/g;
+
+    function initChatReader() {
+      if (!window.alt1) return;
+      chatReader = new Chatbox.default();
+      chatReader.readargs = {
+        colors: [
+          A1lib.mixColor(255, 255, 255),
+          A1lib.mixColor(60, 183, 30),
+        ],
+        backwards: true,
+      };
+      const sel = document.getElementById("chat-box-select");
+      sel.innerHTML = "<option value=''>Searching...</option>";
+      chatReader.find();
+      const findInterval = setInterval(() => {
+        if (chatReader.pos === null) { chatReader.find(); return; }
+        clearInterval(findInterval);
+        sel.innerHTML = "";
+        chatReader.pos.boxes.forEach((box, i) => {
+          const opt = document.createElement("option");
+          opt.value = i; opt.textContent = "Chat " + i;
+          sel.appendChild(opt);
+        });
+        const saved = localStorage.getItem("archChat");
+        const idx = saved !== null ? parseInt(saved) : 0;
+        chatReader.pos.mainbox = chatReader.pos.boxes[idx] || chatReader.pos.boxes[0];
+        if (sel.options[idx]) sel.value = idx;
+        document.getElementById("chat-status").textContent = "Ready — " + chatReader.pos.boxes.length + " box(es) found";
+        document.getElementById("chat-status").style.color = "var(--accent2)";
+      }, 1000);
+    }
+
+    document.getElementById("chat-box-select").addEventListener("change", function() {
+      if (!chatReader || !chatReader.pos) return;
+      const idx = parseInt(this.value);
+      chatReader.pos.mainbox = chatReader.pos.boxes[idx];
+      localStorage.setItem("archChat", idx);
+    });
+
+    function addChatLog(name, qty, type) {
+      const log = document.getElementById("chat-log");
+      const first = log.querySelector("span[style*='muted']");
+      if (first) first.remove();
+      const typeColors = { Normal:"var(--accent2)", "Auto-screener":"var(--accent3)", Porter:"var(--accent)", "Imp Souled":"var(--accent)", Fortune:"#f0c040", Balarak:"#f0c040" };
+      const col = typeColors[type] || "var(--text)";
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--border)";
+      row.innerHTML = "<span style='color:" + col + "'>" + name + "</span><span style='color:var(--muted)'>" + type + " +" + qty + "</span>";
+      log.insertBefore(row, log.firstChild);
+      // Keep only last 50 entries
+      while (log.children.length > 50) log.removeChild(log.lastChild);
+    }
+
+    function checkChatLine(line) {
+      let name = "", type = "";
+      if (line.indexOf("You find some") > -1) {
+        name = line.split("You find some")[1].trim();
+        type = "Normal";
+      }
+      if (line.indexOf("Your auto-screener") > -1) {
+        const part = line.split("Your auto-screener spits out some ");
+        if (part[1]) { name = part[1].trim(); type = "Auto-screener"; }
+      }
+      if (line.indexOf("Your familiar has produced an item") > -1) {
+        name = line.split(/produced an item:? /)[1] || "";
+        name = name.trim(); type = "Familiar";
+      }
+      if (line.indexOf("material storage") > -1) {
+        const part = line.split(/material storage:? /);
+        if (part[1]) {
+          name = part[1].trim(); type = "Porter";
+          if (line.indexOf("imp-souled") > -1) type = "Imp Souled";
+          if (line.indexOf("Fortune perk") > -1) type = "Fortune";
+        }
+      }
+      if (line.indexOf("your bank") > -1) {
+        const m = line.match(/your bank:? [(\.|')+g\s]*/);
+        if (m) {
+          name = m[0].split(/your bank:? /)[1] || "";
+          name = name.trim();
+          type = line.indexOf("imp-souled") > -1 ? "Imp Souled" : "Fortune";
+        }
+      }
+      if (!name) return [false, false];
+      // Strip trailing period and extract after " x "
+      name = name.replace(/\.$/g, "");
+      const xPart = name.split(" x ");
+      if (xPart.length > 1) name = xPart[xPart.length - 1].trim();
+      // Fix OCR quirk from reference app
+      if (name.match(/he..fire metal/i)) name = "Hellfire metal";
+      return [name, type];
+    }
+
+    function readChatbox() {
+      if (!chatReader) return;
+      const opts = chatReader.read() || [];
+      let chatStr = "";
+      for (let i = 0; i < opts.length; i++) {
+        if (!opts[i].text.match(timestampRegex) && i === 0) continue;
+        if (opts[i].text.match(timestampRegex)) {
+          if (i > 0) chatStr += "\n";
+          chatStr += opts[i].text + " ";
+        } else {
+          chatStr += opts[i].text;
+        }
+      }
+      if (!chatStr.trim()) return;
+      const chatArr = chatStr.trim().split("\n");
+      let qty = null;
+      for (let i = 0; i < chatArr.length; i++) {
+        const line = chatArr[i].trim();
+        const prevLine = i > 0 ? chatArr[i-1].trim() : "";
+        if (!line) continue;
+        if (isInChatHistory(line)) continue;
+        // Auto-screener previous line skip
+        if (prevLine && prevLine.indexOf("Your auto-screener") > -1) continue;
+        // Fortune / Balarak — set qty multiplier
+        if (line.indexOf("Fortune perk") > -1 || line.indexOf("Balarak") > -1) {
+          if (line.indexOf("Fortune perk") > -1 && prevLine && prevLine.indexOf("Balarak") > -1) { qty = 4; continue; }
+          qty = 2; continue;
+        }
+        if (!qty) qty = 1;
+        const [name, type] = checkChatLine(line);
+        if (name) {
+          const matched = STORAGE_ORDER.find(k => k.toLowerCase() === name.toLowerCase());
+          if (matched) {
+            S.counts[matched] = (S.counts[matched] || 0) + qty;
+            save(); renderMats(); renderArts();
+            addChatLog(matched, qty, type);
+          }
+          qty = null;
+        }
+      }
+      updateChatHistory(chatArr);
+    }
+
+    function isInChatHistory(line) {
+      const h = sessionStorage.getItem("archChatHistory");
+      if (!h) return false;
+      return h.split("\n").some(l => l.trim() === line);
+    }
+
+    function updateChatHistory(arr) {
+      let history = [];
+      const h = sessionStorage.getItem("archChatHistory");
+      if (h) history = h.split("\n");
+      arr.forEach(l => history.push(l.trim()));
+      while (history.length > 100) history.shift();
+      sessionStorage.setItem("archChatHistory", history.join("\n"));
+    }
+
+    function startChatTracking() {
+      if (!window.alt1) {
+        document.getElementById("chat-status").textContent = "Alt1 not detected";
+        document.getElementById("chat-status").style.color = "var(--danger)";
+        return;
+      }
+      chatTracking = true;
+      chatInterval = setInterval(readChatbox, 200);
+      document.getElementById("btn-chat-toggle").textContent = "⏹ Stop Tracking";
+      document.getElementById("btn-chat-toggle").className = "btn dan";
+      document.getElementById("chat-status").textContent = "Tracking...";
+      document.getElementById("chat-status").style.color = "var(--accent2)";
+    }
+
+    function stopChatTracking() {
+      chatTracking = false;
+      if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
+      document.getElementById("btn-chat-toggle").textContent = "▶ Start Tracking";
+      document.getElementById("btn-chat-toggle").className = "btn suc";
+      document.getElementById("chat-status").textContent = "Not tracking";
+      document.getElementById("chat-status").style.color = "var(--muted)";
+    }
+
+    document.getElementById("btn-chat-toggle").addEventListener("click", () => {
+      if (chatTracking) stopChatTracking();
+      else startChatTracking();
+    });
+
+
+    function updateStatus() {
+      let total=0,types=0,met=0,goaled=0;
+      Object.keys(S.counts).forEach(name=>{ const c=S.counts[name]||0,g=S.goals[name]||0; total+=c; if(c>0)types++; if(g>0){goaled++;if(c>=g)met++;} });
+      document.getElementById("s-total").textContent=total.toLocaleString();
+      document.getElementById("s-types").textContent=types;
+      document.getElementById("s-goals").textContent=met+"/"+goaled;
+      document.getElementById("s-canrest").textContent=ARTEFACTS.filter(canRestore).length;
+    }
+
+    document.querySelectorAll(".tab").forEach(tab=>{
+      tab.addEventListener("click", ()=>{
+        document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
+        if(tab.dataset.tab==="art") renderArts();
+      });
+    });
+
+    document.getElementById("btn-show-tuners").addEventListener("click", ()=>{
+      document.getElementById("tuner-wrap").style.display="block"; loadTuners();
+    });
+    document.getElementById("btn-scan-top").addEventListener("click", ()=>{
+      document.getElementById("tuner-wrap").style.display="block"; loadTuners();
+      if (!storedWinX||!storedWinY) { document.getElementById("ocr-out").textContent="Locate window first."; return; }
+      scanTop();
+    });
+    document.getElementById("btn-scan-bottom").addEventListener("click", ()=>{
+      document.getElementById("tuner-wrap").style.display="block"; loadTuners();
+      if (!storedWinX||!storedWinY) { document.getElementById("ocr-out").textContent="Locate window first."; return; }
+      scanBottom();
+    });
+    document.getElementById("btn-locate").addEventListener("click", startLocate);
+
+    document.getElementById("btn-ocr-apply").addEventListener("click", ()=>{
+      Object.entries(ocrParsed).forEach(([ocrName,count])=>{
+        const trimmed=ocrName.trim();
+        const matched=Object.keys(S.counts).find(k=>k.trim().toLowerCase()===trimmed.toLowerCase());
+        if(matched) S.counts[matched]=count;
+        else S.counts[trimmed]=count;
+      });
+      save(); renderMats(); renderArts();
+      document.getElementById("ocr-results").style.display="none";
+      document.getElementById("ocr-out").textContent="Applied "+Object.keys(ocrParsed).length+" materials.";
+      ocrParsed={};
+    });
+    document.getElementById("btn-ocr-discard").addEventListener("click", ()=>{
+      document.getElementById("ocr-results").style.display="none";
+      document.getElementById("ocr-out").textContent="Discarded.";
+      ocrParsed={};
+    });
+    document.getElementById("btn-manual-ocr").addEventListener("click", ()=>{
+      const pb=document.getElementById("paste-box"), pp=document.getElementById("btn-parse-paste");
+      const show=pb.style.display==="none";
+      pb.style.display=show?"block":"none"; pp.style.display=show?"block":"none";
+    });
+    document.getElementById("btn-parse-paste").addEventListener("click", ()=>{
+      const text=document.getElementById("paste-box").value;
+      const res={};
+      STORAGE_ORDER.forEach(name=>{
+        const esc=name.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+        let m=text.match(new RegExp(esc+"[\\s\\S]{0,30}?([\\d,]+)","i"));
+        if(m){res[name]=parseInt(m[1].replace(/,/g,""));return;}
+        m=text.match(new RegExp("([\\d,]+)[^\\n]{0,15}"+esc,"i"));
+        if(m) res[name]=parseInt(m[1].replace(/,/g,""));
+      });
+      if(Object.keys(res).length) showOCRRes(res);
+      else document.getElementById("ocr-out").textContent="No materials found in pasted text.";
+    });
+
+    load();
+    window.addEventListener("load", function() {
+      if(window.alt1) {
+        A1lib.identifyApp("appconfig.json");
+        document.getElementById("alt1-badge").textContent="Alt1 ✅";
+        document.getElementById("alt1-badge").classList.add("ok");
+        const sx=localStorage.getItem("archStorageWinX");
+        if(sx) document.getElementById("locate-status").textContent="Window: ("+sx+", "+localStorage.getItem("archStorageWinY")+")";
+        initChatReader();
+      }
+    });
+    renderMats(); renderLegend(); renderArts(); updateStatus();
+  </script>
+</body>
+</html>
