@@ -826,10 +826,10 @@
       const n=b.dataset.n;
       if(b.dataset.a==="inc") S.counts[n]=(S.counts[n]||0)+1;
       if(b.dataset.a==="dec") S.counts[n]=Math.max(0,(S.counts[n]||0)-1);
-      save(); renderMats(); renderArts();
+      save(); renderMats(); renderArts(); renderCollections();
     });
     document.getElementById("mat-tbody").addEventListener("change", e=>{
-      if(e.target.matches(".ci")) { S.counts[e.target.dataset.n]=Math.max(0,parseInt(e.target.value)||0); save(); renderMats(); renderArts(); }
+      if(e.target.matches(".ci")) { S.counts[e.target.dataset.n]=Math.max(0,parseInt(e.target.value)||0); save(); renderMats(); renderArts(); renderCollections(); }
       if(e.target.matches(".gi")) { S.goals[e.target.dataset.g]=Math.max(0,parseInt(e.target.value)||0); save(); renderMats(); }
     });
     document.getElementById("search-box").addEventListener("input", renderMats);
@@ -837,7 +837,7 @@
     document.getElementById("btn-reset-all").addEventListener("click", ()=>{
       if(!confirm("Reset ALL counts to 0?")) return;
       Object.keys(S.counts).forEach(name=>{S.counts[name]=0;});
-      save(); renderMats(); renderArts();
+      save(); renderMats(); renderArts(); renderCollections();
     });
 
     function isMat(name) { return STORAGE_ORDER.includes(name); }
@@ -882,7 +882,7 @@
           const art=ARTEFACTS.find(a=>a.name===b.dataset.restore);
           if(!art||!canRestore(art)) return;
           Object.entries(art.mats).filter(e=>isMat(e[0])).forEach(e=>{ S.counts[e[0]]=Math.max(0,(S.counts[e[0]]||0)-e[1]); });
-          save(); renderMats(); renderArts();
+          save(); renderMats(); renderArts(); renderCollections();
         });
       });
     }
@@ -1030,7 +1030,7 @@
           const matched = STORAGE_ORDER.find(k => k.toLowerCase() === name.toLowerCase());
           if (matched) {
             S.counts[matched] = (S.counts[matched] || 0) + qty;
-            save(); renderMats(); renderArts();
+            save(); renderMats(); renderArts(); renderCollections();
             addChatLog(matched, qty, type);
           }
           qty = null;
@@ -1324,7 +1324,7 @@
         if(matched) S.counts[matched]=count;
         else S.counts[trimmed]=count;
       });
-      save(); renderMats(); renderArts();
+      save(); renderMats(); renderArts(); renderCollections();
       document.getElementById("ocr-results").style.display="none";
       document.getElementById("ocr-out").textContent="Applied "+Object.keys(ocrParsed).length+" materials.";
       ocrParsed={};
