@@ -242,26 +242,51 @@
       Dragonkin:"#c0006a", Unknown:"#888888"
     };
     const MATS = [
-      {name:"Third Age iron",lv:5,c:"Agnostic"},{name:"Samite silk",lv:12,c:"Agnostic"},
-      {name:"White oak",lv:17,c:"Agnostic"},{name:"Goldrune",lv:20,c:"Agnostic"},
-      {name:"Orthenglass",lv:20,c:"Agnostic"},{name:"Vellum",lv:24,c:"Agnostic"},
-      {name:"Leather scraps",lv:29,c:"Agnostic"},{name:"Soapstone",lv:60,c:"Agnostic"},
-      {name:"Animal furs",lv:76,c:"Agnostic"},{name:"Fossilised bone",lv:81,c:"Agnostic"},
-      {name:"Stormguard steel",lv:70,c:"Armadylean"},{name:"Wings of War",lv:70,c:"Armadylean"},
-      {name:"Armadylean yellow",lv:76,c:"Armadylean"},{name:"Aetherium alloy",lv:85,c:"Armadylean"},
-      {name:"Quintessence",lv:91,c:"Armadylean"},{name:"Malachite green",lv:76,c:"Bandosian"},
-      {name:"Mark of the Kyzaj",lv:76,c:"Bandosian"},{name:"Vulcanised rubber",lv:76,c:"Bandosian"},
-      {name:"Warforged bronze",lv:93,c:"Bandosian"},{name:"Yu'biusk clay",lv:83,c:"Bandosian"},
-      {name:"Dragon metal",lv:73,c:"Dragonkin"},{name:"Orgone",lv:73,c:"Dragonkin"},
-      {name:"Compass rose",lv:77,c:"Dragonkin"},{name:"Carbon black",lv:78,c:"Dragonkin"},
-      {name:"Felt",lv:78,c:"Dragonkin"},{name:"Keramos",lv:42,c:"Saradominist"},
-      {name:"White marble",lv:42,c:"Saradominist"},{name:"Cobalt blue",lv:48,c:"Saradominist"},
-      {name:"Everlight silvthril",lv:51,c:"Saradominist"},{name:"Star of Saradomin",lv:51,c:"Saradominist"},
-      {name:"Cadmium red",lv:24,c:"Zamorakian"},{name:"Chaotic brimstone",lv:29,c:"Zamorakian"},
-      {name:"Demonhide",lv:29,c:"Zamorakian"},{name:"Eye of Dagon",lv:36,c:"Zamorakian"},
-      {name:"Hellfire metal",lv:36,c:"Zamorakian"},{name:"Zarosian insignia",lv:5,c:"Zarosian"},
-      {name:"Imperial steel",lv:12,c:"Zarosian"},{name:"Ancient vis",lv:25,c:"Zarosian"},
-      {name:"Tyrian purple",lv:25,c:"Zarosian"},{name:"Blood of Orcus",lv:58,c:"Zarosian"},
+      {name:"Third Age iron",lv:5,c:"Agnostic",caches:[]},
+      {name:"Samite silk",lv:12,c:"Agnostic",caches:[]},
+      {name:"White oak",lv:17,c:"Agnostic",caches:[]},
+      {name:"Goldrune",lv:20,c:"Agnostic",caches:[]},
+      {name:"Orthenglass",lv:20,c:"Agnostic",caches:[]},
+      {name:"Vellum",lv:24,c:"Agnostic",caches:[]},
+      {name:"Leather scraps",lv:29,c:"Agnostic",caches:[]},
+      {name:"Soapstone",lv:60,c:"Agnostic",caches:[]},
+      {name:"Animal furs",lv:76,c:"Agnostic",caches:[]},
+      {name:"Fossilised bone",lv:81,c:"Agnostic",caches:[]},
+      {name:"Stormguard steel",lv:70,c:"Armadylean",caches:[]},
+      {name:"Wings of War",lv:70,c:"Armadylean",caches:[]},
+      {name:"Armadylean yellow",lv:76,c:"Armadylean",caches:[]},
+      {name:"Aetherium alloy",lv:85,c:"Armadylean",caches:[]},
+      {name:"Quintessence",lv:91,c:"Armadylean",caches:[]},
+      {name:"Malachite green",lv:76,c:"Bandosian",caches:[]},
+      {name:"Mark of the Kyzaj",lv:76,c:"Bandosian",caches:[]},
+      {name:"Vulcanised rubber",lv:76,c:"Bandosian",caches:[]},
+      {name:"Warforged bronze",lv:93,c:"Bandosian",caches:[
+        {location:"Warforge - Crucible arena",count:2},
+        {location:"God Wars Dungeon - Bandosian north",count:3},
+        {location:"Warforge - North goblin tunnels",count:2},
+        {location:"God Wars Dungeon - Bandos's Stronghold",count:4},
+      ]},
+      {name:"Yu'biusk clay",lv:83,c:"Bandosian",caches:[]},
+      {name:"Dragon metal",lv:73,c:"Dragonkin",caches:[]},
+      {name:"Orgone",lv:73,c:"Dragonkin",caches:[]},
+      {name:"Compass rose",lv:77,c:"Dragonkin",caches:[]},
+      {name:"Carbon black",lv:78,c:"Dragonkin",caches:[]},
+      {name:"Felt",lv:78,c:"Dragonkin",caches:[]},
+      {name:"Keramos",lv:42,c:"Saradominist",caches:[]},
+      {name:"White marble",lv:42,c:"Saradominist",caches:[]},
+      {name:"Cobalt blue",lv:48,c:"Saradominist",caches:[]},
+      {name:"Everlight silvthril",lv:51,c:"Saradominist",caches:[]},
+      {name:"Star of Saradomin",lv:51,c:"Saradominist",caches:[]},
+      {name:"Cadmium red",lv:24,c:"Zamorakian",caches:[]},
+      {name:"Chaotic brimstone",lv:29,c:"Zamorakian",caches:[]},
+      {name:"Demonhide",lv:29,c:"Zamorakian",caches:[]},
+      {name:"Eye of Dagon",lv:36,c:"Zamorakian",caches:[]},
+      {name:"Hellfire metal",lv:36,c:"Zamorakian",caches:[]},
+      {name:"Zarosian insignia",lv:5,c:"Zarosian",caches:[]},
+      {name:"Imperial steel",lv:12,c:"Zarosian",caches:[]},
+      {name:"Ancient vis",lv:25,c:"Zarosian",caches:[]},
+      {name:"Tyrian purple",lv:25,c:"Zarosian",caches:[]},
+      {name:"Blood of Orcus",lv:58,c:"Zarosian",caches:[]},
     ];
     const ARTEFACTS = [
       // ── Kharid-et ──────────────────────────────────────────────────────────
@@ -825,8 +850,14 @@
         const pct=mat.goal>0?Math.min(100,Math.round(mat.have/mat.goal*100)):(mat.have>0?100:0);
         const cls=mat.goal>0?(pct>=100?"full":pct>=50?"mid":"low"):"low";
         const cc=CULTURE_COL[mat.c]||"#888888";
+        const matObj=MATS.find(m=>m.name===mat.name);
+        const caches=matObj&&matObj.caches&&matObj.caches.length?matObj.caches:null;
+        const cachesTip=caches?caches.map(c=>`📦 ${c.location} — ${c.count} cache${c.count!==1?"s":""}`).join("<br>"):"";
+        const nameHtml=cachesTip
+          ? `<span class='art-tooltip'>${mat.name}<span class='tip'>${cachesTip}</span></span>`
+          : mat.name;
         const tr=document.createElement("tr");
-        tr.innerHTML=`<td><div class='mn'><span class='cdot' style='background:${cc}'></span>${mat.name}${mat.c==="Unknown"?" <small>(extra)</small>":""}</div></td>
+        tr.innerHTML=`<td><div class='mn'><span class='cdot' style='background:${cc}'></span>${nameHtml}${mat.c==="Unknown"?" <small>(extra)</small>":""}</div></td>
           <td style='text-align:center;color:var(--muted)'>${mat.lv}</td>
           <td><div class='cc'><button class='btn-xs' data-a='dec' data-n='${mat.name}'>−</button>
           <input class='ci' type='number' min='0' value='${mat.have}' data-n='${mat.name}'>
@@ -866,6 +897,13 @@
     });
 
     function isMat(name) { return STORAGE_ORDER.includes(name); }
+    function matNameHtml(name) {
+      const matObj = MATS.find(m => m.name === name);
+      const caches = matObj && matObj.caches && matObj.caches.length ? matObj.caches : null;
+      if (!caches) return `<span>${name}</span>`;
+      const tip = caches.map(c => `📦 ${c.location} — ${c.count} cache${c.count!==1?"s":""}`).join("<br>");
+      return `<span class='art-tooltip'>${name}<span class='tip'>${tip}</span></span>`;
+    }
     function canRestore(art) { return Object.entries(art.mats).filter(e=>isMat(e[0])).every(e=>(S.counts[e[0]]||0)>=e[1]); }
     function matCulture(name) { const m=MATS.find(x=>x.name===name); return m?m.c:"Unknown"; }
 
@@ -891,7 +929,7 @@
           const untracked=Object.entries(art.mats).filter(me=>!isMat(me[0]));
           const matRows=Object.entries(art.mats).filter(me=>isMat(me[0])).map(me=>{
             const have=S.counts[me[0]]||0, ok=have>=me[1];
-            return `<div class='mr ${ok?"ok":"bad"}'><span class='cdot' style='background:${CULTURE_COL[matCulture(me[0])]}'></span><span>${me[0]}</span><span class='need'><span class='have'>${have.toLocaleString()}</span> / ${me[1]}</span></div>`;
+            return `<div class='mr ${ok?"ok":"bad"}'><span class='cdot' style='background:${CULTURE_COL[matCulture(me[0])]}'></span>${matNameHtml(me[0])}<span class='need'><span class='have'>${have.toLocaleString()}</span> / ${me[1]}</span></div>`;
           }).join("");
           const card=document.createElement("div"); card.className="art-card";
           const noteHtml=art.note?`<div class='art-note'>${art.note}</div>`:"";
@@ -1347,7 +1385,7 @@
           const matRows = Object.entries(matsNeeded).map(([mat, need]) => {
             const have = S.counts[mat]||0;
             const ok = have >= need;
-            return `<div class='mr ${ok?"ok":"bad"}'><span class='cdot' style='background:${CULTURE_COL[matCulture(mat)]}'></span><span>${mat}</span><span class='need'><span class='have'>${have.toLocaleString()}</span> / ${need.toLocaleString()}</span></div>`;
+            return `<div class='mr ${ok?"ok":"bad"}'><span class='cdot' style='background:${CULTURE_COL[matCulture(mat)]}'></span>${matNameHtml(mat)}<span class='need'><span class='have'>${have.toLocaleString()}</span> / ${need.toLocaleString()}</span></div>`;
           }).join("");
 
           card.innerHTML = `
