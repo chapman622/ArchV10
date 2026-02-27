@@ -1285,12 +1285,12 @@
             return {artName, artKey, restored, damaged};
           });
 
-          // Mats needed = sum over artefacts of (damaged - restored) clamped to 0, times mat qty
+          // Mats needed = (times - restored) per artefact, clamped to 0
           const matsNeeded = {};
-          artData.forEach(({artName, restored, damaged}) => {
+          artData.forEach(({artName, restored}) => {
             const art = ARTEFACTS.find(a=>a.name===artName);
             if (!art) return;
-            const remaining = Math.max(0, damaged - restored);
+            const remaining = Math.max(0, times - restored);
             Object.entries(art.mats).forEach(([mat, qty]) => {
               if (!isMat(mat)) return;
               matsNeeded[mat] = (matsNeeded[mat]||0) + qty * remaining;
