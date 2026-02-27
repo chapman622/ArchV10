@@ -894,7 +894,11 @@
           const card=document.createElement("div"); card.className="art-card";
           const noteHtml=art.note?`<div class='art-note'>${art.note}</div>`:"";
           const untrackedHtml=untracked.length?`<div class='art-note'>Requires ${untracked.map(me=>`${me[0]} ×${me[1]}`).join(", ")}</div>`:"";
-          card.innerHTML=`<div class='art-head'><span class='art-name'>${art.name}</span><span class='art-lvl'>Lv ${art.lv}</span><span class='art-xp'>${art.xp.toLocaleString()} xp</span></div>
+          const artTipContent = [art.site, art.loc].filter(Boolean).join(" — ");
+          const artNameHtml = artTipContent
+            ? `<span class='art-name art-tooltip'>${art.name}<span class='tip'>📍 ${artTipContent}</span></span>`
+            : `<span class='art-name'>${art.name}</span>`;
+          card.innerHTML=`<div class='art-head'>${artNameHtml}<span class='art-lvl'>Lv ${art.lv}</span><span class='art-xp'>${art.xp.toLocaleString()} xp</span></div>
             ${noteHtml}${untrackedHtml}${matRows}<div class='art-footer'><span class='${can?"art-can":"art-cant"}'>${can?"✔ Can restore":"✖ Missing mats"}</span>
             ${can?`<button class='btn suc' style='font-size:9px;padding:2px 6px' data-restore='${art.name}'>Restore →</button>`:""}</div>`;
           scroll.appendChild(card);
