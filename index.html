@@ -107,6 +107,7 @@
     <div class="tab active" data-tab="inv">MATS</div>
     <div class="tab" data-tab="art">ARTEFACTS</div>
     <div class="tab" data-tab="chat">CHAT</div>
+    <div class="tab" data-tab="col">COLLECTIONS</div>
     <div class="tab" data-tab="ocr">OCR</div>
   </div>
   <div class="panel active" id="panel-inv">
@@ -209,6 +210,13 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="panel" id="panel-col">
+    <div class="toolbar">
+      <input type="text" id="col-search" class="f1" placeholder="Search collections..."/>
+      <select id="col-filter-collector"><option value="">All collectors</option></select>
+    </div>
+    <div class="scroll" id="col-scroll"></div>
   </div>
   <div class="status-bar">
     <div>Total: <span id="s-total">0</span></div>
@@ -914,11 +922,12 @@
         const idx = saved !== null ? parseInt(saved) : 0;
         chatReader.pos.mainbox = chatReader.pos.boxes[idx] || chatReader.pos.boxes[0];
         if (sel.options[idx]) sel.value = idx;
+        document.getElementById("chat-status").textContent = "Ready — " + chatReader.pos.boxes.length + " box(es) found";
+        document.getElementById("chat-status").style.color = "var(--accent2)";
         try {
           const box = chatReader.pos.mainbox.rect;
           alt1.overLayRect(A1lib.mixColor(255, 199, 0), box.x, box.y, box.width, box.height, 2000, 5);
         } catch(e) {}
-        startChatTracking();
       }, 1000);
     }
 
@@ -1055,7 +1064,7 @@
       chatInterval = setInterval(readChatbox, 200);
       document.getElementById("btn-chat-toggle").textContent = "⏹ Stop Tracking";
       document.getElementById("btn-chat-toggle").className = "btn dan";
-      document.getElementById("chat-status").textContent = "Tracking — " + (chatReader && chatReader.pos ? chatReader.pos.boxes.length : "?") + " box(es) found";
+      document.getElementById("chat-status").textContent = "Tracking...";
       document.getElementById("chat-status").style.color = "var(--accent2)";
     }
 
@@ -1083,6 +1092,203 @@
       document.getElementById("s-canrest").textContent=ARTEFACTS.filter(canRestore).length;
     }
 
+    // ── COLLECTIONS DATA ──────────────────────────────────────────────────────
+    const COLLECTIONS = [
+      // Art Critic Jacques
+      {collector:"Art Critic Jacques",name:"Anarchic Abstraction",lv:89,artefacts:["'Disorder' painting","'The Lake of Fire' painting","'Pandemonium' tapestry"]},
+      {collector:"Art Critic Jacques",name:"Radiant Renaissance",lv:105,artefacts:["'Hallowed Be the Everlight' painting","'The Lord of Light' painting","'The Pride of Padosan' painting"]},
+      {collector:"Art Critic Jacques",name:"Imperial Impressionism",lv:118,artefacts:["'Solem in Umbra' painting","'Consensus ad Idem' painting","'Prima legio' painting"]},
+      // Chief Tess
+      {collector:"Chief Tess",name:"Blingy Fings",lv:69,artefacts:["Ancient timepiece","Legatus pendant","Pontifex signet ring","Bronze Dominion medal","Silver Dominion medal"]},
+      {collector:"Chief Tess",name:"Smoky Fings",lv:81,artefacts:["Hookah pipe","Opulent wine goblet","Everlight trumpet","Dominion torch","Pontifex censer"]},
+      {collector:"Chief Tess",name:"Hitty Fings",lv:89,artefacts:["Ceremonial mace","Pontifex crozier","Fishing trident","High priest crozier","High priest orb"]},
+      {collector:"Chief Tess",name:"Showy Fings",lv:92,artefacts:["Crest of Dagon","Legatus Maximus figurine","'Lust' metal sculpture","Pontifex Maximus figurine","Ceremonial plume","Rod of Asclepius"]},
+      // Eblis
+      {collector:"Eblis",name:"Finery of the Inquisition",lv:64,artefacts:["Inquisitor's ceremonial armour","Inquisitor's ceremonial mask","Inquisitor's seal"]},
+      {collector:"Eblis",name:"Religious Iconography",lv:67,artefacts:["Apex cap","Infula robes","Loarnab rod","'The Serpent's Fall' carving"]},
+      {collector:"Eblis",name:"Urns of the Empire",lv:67,artefacts:["Funerary urn of shadow","Funerary urn of smoke","Funerary urn of ice","Funerary urn of blood","Funerary urn of miasma"]},
+      {collector:"Eblis",name:"Entertaining the Masses",lv:67,artefacts:["Dominion discus","Dominion javelin","Dominion pelte shield","Dominion torch"]},
+      {collector:"Eblis",name:"Imperial Sorcery",lv:107,artefacts:["'Incite Fear' spell scroll","Pontifex signet ring","Pontifex censer","Pontifex crozier","Pontifex mitre","Pontifex Maximus figurine","Necromantic focus","'Exsanguinate' spell scroll"]},
+      // General Bentnoze
+      {collector:"General Bentnoze",name:"Red Rum Relics I",lv:94,artefacts:["Chaos star","Spiked dog collar","Branding iron","Manacles"]},
+      {collector:"General Bentnoze",name:"Red Rum Relics II",lv:110,artefacts:["'Torment' metal sculpture","Tsutsaroth piercing","Trishula","Tsutsaroth urumi"]},
+      {collector:"General Bentnoze",name:"Red Rum Relics III",lv:119,artefacts:["Tsutsaroth helm","Tsutsaroth pauldron","Hellfire haladie","Hellfire katar"]},
+      // General Wartface
+      {collector:"General Wartface",name:"Green Gobbo Goodies I",lv:83,artefacts:["Narogoshuun 'Hob-da-Gob' ball","Ekeleshuun blinder mask","Rekeshuun war tether","Thorobshuun battle standard","Yurkolgokh stink grenade"]},
+      {collector:"General Wartface",name:"Green Gobbo Goodies II",lv:97,artefacts:["Ogre Kyzaj axe","Ork cleaver sword","High priest mitre","Beastkeeper helm","Idithuun horn ring"]},
+      {collector:"General Wartface",name:"Green Gobbo Goodies III",lv:119,artefacts:["Kal-i-kra chieftan crown","Kal-i-kra mace","Kal-i-kra warhorn","Drogokishuun hook sword","Hobgoblin mansticker","'Nosorog!' sculpture"]},
+      // Giles
+      {collector:"Giles",name:"Desperate for Artefacts",lv:90,artefacts:["Dragonkin device","Dragonkin tablet"]},
+      // Isaura
+      {collector:"Isaura",name:"Zamorakian I",lv:36,artefacts:["Hookah pipe","Opulent wine goblet","Crest of Dagon","'Disorder' painting","Imp mask","Lesser demon mask","Greater demon mask","Order of Dis robes","Ritual dagger"]},
+      {collector:"Isaura",name:"Zamorakian II",lv:81,artefacts:["Branding iron","Manacles","'The Lake of Fire' painting","'Lust' metal sculpture","Chaos star","Spiked dog collar","She-wolf trophy","Larupia trophy","Lion trophy"]},
+      {collector:"Isaura",name:"Zamorakian III",lv:104,artefacts:["'Pandemonium' tapestry","'Torment' metal sculpture","Chaos Elemental trophy","Virius trophy","Trishula","Tsutsaroth piercing","Hellfire zaghnal","Hellfire katar"]},
+      {collector:"Isaura",name:"Zamorakian IV",lv:116,artefacts:["Tsutsaroth helm","Tsutsaroth pauldron","Tsutsaroth urumi","Hellfire haladie","'Possession' metal sculpture"]},
+      // Lowse
+      {collector:"Lowse",name:"Armadylean I",lv:81,artefacts:["Ikovian gerege","Toy glider","Toy war golem","Keshik drum","Morin khuur","Avian song-egg player","Wingsuit v1","Aviansie dreamcoat","Peacocking parasol"]},
+      {collector:"Lowse",name:"Armadylean II",lv:98,artefacts:["Hawkeye lens multi-vision scope","Talon-3 razor wing","Prototype gravimeter","Songbird recorder","Flat cap","Night owl flight goggles","Ceremonial plume","Dayguard shield"]},
+      {collector:"Lowse",name:"Armadylean III",lv:118,artefacts:["Blackfire lance","Nightguard shield","Prototype godbow","Prototype godstaff","Prototype godsword","Chuluu stone","Quintessence counter","Spherical astrolabe","Stormguard gerege","Golem heart"]},
+      // Sharrigan
+      {collector:"Sharrigan",name:"Dragonkin I",lv:99,artefacts:["Castle gatestone","Engraved ring of kinship","Exploratory totem","Storage totem","Plant seed satchel","Snuff box","Excavator portal mine"]},
+      {collector:"Sharrigan",name:"Dragonkin II",lv:102,artefacts:["Dragon scalpel","Protective goggles","Dragon burner","Orthenglass flask"]},
+      {collector:"Sharrigan",name:"Dragonkin III",lv:108,artefacts:["Spent summoning charm","'Friendship bracelet'","Homely totem","Pasaha","Ritual bell"]},
+      {collector:"Sharrigan",name:"Dragonkin IV",lv:120,artefacts:["Meditation pipe","Personal totem","Singing bowl","Kilaya","Vazara","Dragonkin calendar"]},
+      {collector:"Sharrigan",name:"Dragonkin V",lv:77,artefacts:["Exploratory totem","Storage totem","Castle gatestone","Excavator portal mine"]},
+      {collector:"Sharrigan",name:"Dragonkin VI",lv:87,artefacts:["Spent summoning charm","'Friendship bracelet'","Homely totem","Plant seed satchel","Snuff box","Projection attuner"]},
+      {collector:"Sharrigan",name:"Dragonkin VII",lv:113,artefacts:["Death mask","Dragonkin staff","Dragon burner","Orthenglass flask","Golden projection 'needle'","Projection attuner"]},
+      // Sir Atcha
+      {collector:"Sir Atcha",name:"Saradominist I",lv:56,artefacts:["'Frying pan'","Hallowed lantern","Ceremonial unicorn ornament","Ceremonial unicorn saddle","Everlight harp","Everlight trumpet","Everlight violin","Folded-arm figurine (female)","Folded-arm figurine (male)"]},
+      {collector:"Sir Atcha",name:"Saradominist II",lv:72,artefacts:["Decorative vase","Kantharos cup","Patera bowl","Ceremonial unicorn ornament","Ceremonial unicorn saddle","Dominion discus","Dominion javelin","Dominion pelte shield","Bronze Dominion medal"]},
+      {collector:"Sir Atcha",name:"Saradominist III",lv:100,artefacts:["Dominarian device","Fishing trident","Rod of Asclepius","Amphora","Kopis dagger","Xiphos short sword"]},
+      {collector:"Sir Atcha",name:"Saradominist IV",lv:117,artefacts:["Doru spear","Kontos lance","'The Enlightened Soul' scroll","'The Eudoxian Elements' tablet","'Hallowed Be the Everlight' painting","'The Lord of Light' painting","'The Pride of Padosan' painting"]},
+      // Soran
+      {collector:"Soran",name:"Zarosian I",lv:25,artefacts:["Venator dagger","Venator light crossbow","Centurion's seal","Legionary gladius","Legionary square shield","Zaros effigy","Zarosian training dummy","Legatus Maximus figurine","'Solem in Umbra' painting"]},
+      {collector:"Soran",name:"Zarosian II",lv:81,artefacts:["Ancient timepiece","Legatus pendant","Apex cap","Curse tablet","Funerary urn of shadow","Funerary urn of smoke","Funerary urn of ice","Funerary urn of blood","Funerary urn of miasma","Decorative amphora"]},
+      {collector:"Soran",name:"Zarosian III",lv:107,artefacts:["Gladiator helmet","Gladiator sword","Model chariot","Inquisitor's ceremonial armour","Inquisitor's ceremonial mask","Inquisitor's seal","Hand of the Ancients","Loarnab rod","'The Serpent's Fall' carving"]},
+      {collector:"Soran",name:"Zarosian IV",lv:118,artefacts:["Pontifex mitre","Praetorian hood","Praetorian robe","Praetorian staff","Ancient globe","Battle plans","'Prima legio' painting"]},
+      // Velucia - Museum collections
+      {collector:"Velucia",name:"Museum - Zarosian I",lv:25,artefacts:["Venator dagger","Venator light crossbow","Centurion's seal","Legionary gladius","Legionary square shield","Zaros effigy","Zarosian training dummy","Legatus Maximus figurine","'Solem in Umbra' painting"]},
+      {collector:"Velucia",name:"Museum - Zarosian II",lv:81,artefacts:["Ancient timepiece","Legatus pendant","Apex cap","Curse tablet","Funerary urn of shadow","Funerary urn of smoke","Funerary urn of ice","Funerary urn of blood","Funerary urn of miasma","Decorative amphora"]},
+      {collector:"Velucia",name:"Museum - Zarosian III",lv:107,artefacts:["Gladiator helmet","Gladiator sword","Model chariot","Inquisitor's ceremonial armour","Inquisitor's ceremonial mask","Inquisitor's seal","Hand of the Ancients","Loarnab rod","'The Serpent's Fall' carving"]},
+      {collector:"Velucia",name:"Museum - Zarosian IV",lv:118,artefacts:["Pontifex mitre","Praetorian hood","Praetorian robe","Praetorian staff","Ancient globe","Battle plans"]},
+      {collector:"Velucia",name:"Museum - Zarosian V",lv:62,artefacts:["Gladiator helmet","Gladiator sword","Model chariot","Inquisitor's ceremonial armour","Inquisitor's ceremonial mask","'The Serpent's Fall' carving"]},
+      {collector:"Velucia",name:"Museum - Zarosian VI",lv:64,artefacts:["Inquisitor's ceremonial armour","Inquisitor's ceremonial mask","Inquisitor's seal","Infula robes","Apex cap","Curse tablet"]},
+      {collector:"Velucia",name:"Museum - Zarosian VII",lv:67,artefacts:["Funerary urn of shadow","Funerary urn of smoke","Funerary urn of ice","Funerary urn of blood","Funerary urn of miasma","Decorative amphora"]},
+      {collector:"Velucia",name:"Museum - Zamorakian I",lv:36,artefacts:["Hookah pipe","Opulent wine goblet","Crest of Dagon","'Disorder' painting","Imp mask","Lesser demon mask","Greater demon mask","Order of Dis robes","Ritual dagger"]},
+      {collector:"Velucia",name:"Museum - Zamorakian II",lv:81,artefacts:["Branding iron","Manacles","'The Lake of Fire' painting","'Lust' metal sculpture","Chaos star","Spiked dog collar","She-wolf trophy","Larupia trophy","Lion trophy"]},
+      {collector:"Velucia",name:"Museum - Zamorakian III",lv:104,artefacts:["'Pandemonium' tapestry","'Torment' metal sculpture","Chaos Elemental trophy","Virius trophy","Trishula","Tsutsaroth piercing","Hellfire zaghnal","Hellfire katar"]},
+      {collector:"Velucia",name:"Museum - Zamorakian IV",lv:116,artefacts:["Tsutsaroth helm","Tsutsaroth pauldron","Tsutsaroth urumi","Hellfire haladie","'Possession' metal sculpture"]},
+      {collector:"Velucia",name:"Museum - Saradominist I",lv:56,artefacts:["'Frying pan'","Hallowed lantern","Ceremonial unicorn ornament","Ceremonial unicorn saddle","Everlight harp","Everlight trumpet","Everlight violin","Folded-arm figurine (female)","Folded-arm figurine (male)"]},
+      {collector:"Velucia",name:"Museum - Saradominist II",lv:72,artefacts:["Decorative vase","Kantharos cup","Patera bowl","Ceremonial unicorn ornament","Ceremonial unicorn saddle","Dominion discus","Dominion javelin","Dominion pelte shield","Bronze Dominion medal"]},
+      {collector:"Velucia",name:"Museum - Saradominist III",lv:100,artefacts:["Dominarian device","Fishing trident","Rod of Asclepius","Amphora","Kopis dagger","Xiphos short sword"]},
+      {collector:"Velucia",name:"Museum - Saradominist IV",lv:117,artefacts:["Doru spear","Kontos lance","'The Enlightened Soul' scroll","'The Eudoxian Elements' tablet","'Hallowed Be the Everlight' painting","'The Lord of Light' painting","'The Pride of Padosan' painting"]},
+      {collector:"Velucia",name:"Museum - Armadylean I",lv:81,artefacts:["Ikovian gerege","Toy glider","Toy war golem","Keshik drum","Morin khuur","Avian song-egg player","Wingsuit v1","Aviansie dreamcoat","Peacocking parasol"]},
+      {collector:"Velucia",name:"Museum - Armadylean II",lv:98,artefacts:["Hawkeye lens multi-vision scope","Talon-3 razor wing","Prototype gravimeter","Songbird recorder","Flat cap","Night owl flight goggles","Ceremonial plume","Dayguard shield"]},
+      {collector:"Velucia",name:"Museum - Armadylean III",lv:118,artefacts:["Blackfire lance","Nightguard shield","Prototype godbow","Prototype godstaff","Prototype godsword","Chuluu stone","Quintessence counter","Spherical astrolabe","Stormguard gerege","Golem heart"]},
+      {collector:"Velucia",name:"Museum - Bandosian I",lv:89,artefacts:["Narogoshuun 'Hob-da-Gob' ball","Ekeleshuun blinder mask","Rekeshuun war tether","Thorobshuun battle standard","Yurkolgokh stink grenade","Ogre Kyzaj axe","Ork cleaver sword","High priest mitre","Beastkeeper helm","Idithuun horn ring"]},
+      {collector:"Velucia",name:"Museum - Bandosian II",lv:100,artefacts:["Kal-i-kra chieftan crown","Kal-i-kra mace","Kal-i-kra warhorn","'Nosorog!' sculpture","Garagorshuun anchor","Ourg megahitter","Ourg tower/goblin cower shield","Huzamogaarb chaos crown"]},
+      {collector:"Velucia",name:"Museum - Bandosian III",lv:119,artefacts:["Drogokishuun hook sword","Hobgoblin mansticker","Dorgeshuun spear","'Forged in War' sculpture","Saragorgak star crown","Kal-i-kra chieftan crown","Kal-i-kra mace","Kal-i-kra warhorn","Beastkeeper helm"]},
+      {collector:"Velucia",name:"Museum - Dragonkin I",lv:99,artefacts:["Castle gatestone","Engraved ring of kinship","Exploratory totem","Storage totem","Plant seed satchel","Snuff box","Excavator portal mine"]},
+      {collector:"Velucia",name:"Museum - Dragonkin II",lv:102,artefacts:["Dragon scalpel","Protective goggles","Dragon burner","Orthenglass flask"]},
+      {collector:"Velucia",name:"Museum - Dragonkin III",lv:108,artefacts:["Spent summoning charm","'Friendship bracelet'","Homely totem","Pasaha","Ritual bell"]},
+      {collector:"Velucia",name:"Museum - Dragonkin IV",lv:120,artefacts:["Meditation pipe","Personal totem","Singing bowl","Kilaya","Vazara","Dragonkin calendar"]},
+      {collector:"Velucia",name:"Museum - Dragonkin V",lv:77,artefacts:["Exploratory totem","Storage totem","Castle gatestone","Excavator portal mine"]},
+      {collector:"Velucia",name:"Museum - Dragonkin VI",lv:87,artefacts:["Spent summoning charm","'Friendship bracelet'","Homely totem","Plant seed satchel","Snuff box","Projection attuner"]},
+      {collector:"Velucia",name:"Museum - Dragonkin VII",lv:113,artefacts:["Death mask","Dragonkin staff","Dragon burner","Orthenglass flask","Golden projection 'needle'","Projection attuner"]},
+      // Wise Old Man
+      {collector:"Wise Old Man",name:"Wise Am the Music Man",lv:91,artefacts:["Everlight harp","Everlight trumpet","Everlight violin","Keshik drum","Morin khuur","Avian song-egg player","Songbird recorder"]},
+      {collector:"Wise Old Man",name:"Hat Problem",lv:114,artefacts:["Apex cap","Pontifex mitre","High priest mitre","Flat cap","Night owl flight goggles","Aviansie dreamcoat","Peacocking parasol"]},
+      {collector:"Wise Old Man",name:"Hat Hoarder",lv:116,artefacts:["Beastkeeper helm","Kal-i-kra chieftan crown","Huzamogaarb chaos crown","Saragorgak star crown","Tsutsaroth helm","Praetorian hood","Golem instruction"]},
+      {collector:"Wise Old Man",name:"Magic Man",lv:118,artefacts:["'Incite Fear' spell scroll","'Exsanguinate' spell scroll","'Animate Dead' spell scroll","'Smoke Cloud' spell scroll","Ancient magic tablet","Portable phylactery","Necromantic focus","Praetorian staff","Golem instruction","Vigorem vial"]},
+      {collector:"Wise Old Man",name:"Knowledge is Power",lv:119,artefacts:["Ancient globe","Battle plans","'Prima legio' painting","Chuluu stone","Quintessence counter","Spherical astrolabe","'The Enlightened Soul' scroll"]},
+    ];
+
+    // Populate collector filter dropdown
+    (function() {
+      const collectors = [...new Set(COLLECTIONS.map(c=>c.collector))].sort();
+      const sel = document.getElementById("col-filter-collector");
+      collectors.forEach(c => { const o=document.createElement("option"); o.value=c; o.textContent=c; sel.appendChild(o); });
+    })();
+
+    let colCompletions = JSON.parse(localStorage.getItem("archColCompletions")||"{}");
+
+    function saveColCompletions() { localStorage.setItem("archColCompletions", JSON.stringify(colCompletions)); }
+
+    function getColMats(col, times) {
+      const totals = {};
+      col.artefacts.forEach(artName => {
+        const art = ARTEFACTS.find(a => a.name === artName);
+        if (!art) return;
+        Object.entries(art.mats).forEach(([mat, qty]) => {
+          if (!isMat(mat)) return;
+          totals[mat] = (totals[mat]||0) + qty * times;
+        });
+      });
+      return totals;
+    }
+
+    function renderCollections() {
+      const q = document.getElementById("col-search").value.toLowerCase();
+      const coll = document.getElementById("col-filter-collector").value;
+      const scroll = document.getElementById("col-scroll");
+      scroll.innerHTML = "";
+
+      const filtered = COLLECTIONS.filter(c => {
+        if (coll && c.collector !== coll) return false;
+        if (q && !c.name.toLowerCase().includes(q) && !c.collector.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      if (!filtered.length) { scroll.innerHTML="<div style='padding:12px;color:var(--muted)'>No collections match.</div>"; return; }
+
+      // Group by collector
+      const byCollector = {};
+      filtered.forEach(c => { if(!byCollector[c.collector]) byCollector[c.collector]=[]; byCollector[c.collector].push(c); });
+
+      Object.entries(byCollector).forEach(([collector, cols]) => {
+        const hdr = document.createElement("div"); hdr.className="site-hdr"; hdr.textContent=collector; scroll.appendChild(hdr);
+        cols.sort((a,b)=>a.lv-b.lv).forEach(col => {
+          const key = col.collector+"|"+col.name;
+          const times = colCompletions[key]||1;
+          const totals = getColMats(col, times);
+          const allMet = Object.entries(totals).every(([m,n])=>(S.counts[m]||0)>=n);
+
+          const card = document.createElement("div"); card.className="art-card";
+
+          // Artefact rows
+          const artRows = col.artefacts.map(artName => {
+            const art = ARTEFACTS.find(a=>a.name===artName);
+            if (!art) return `<div class='mr'><span style='color:var(--muted)'>${artName}</span><span class='need' style='color:var(--danger)'>not found</span></div>`;
+            const untracked = Object.entries(art.mats).filter(([m])=>!isMat(m));
+            const untrackedNote = untracked.length ? `<span style='color:var(--muted);font-size:9px;margin-left:4px'>(+${untracked.map(([m,n])=>m+" ×"+(n*times)).join(", ")})</span>` : "";
+            return `<div class='mr' style='padding:1px 0 1px 8px;font-size:10px;color:var(--muted)'>${artName}${untrackedNote}</div>`;
+          }).join("");
+
+          // Material total rows
+          const matRows = Object.entries(totals).map(([mat, need]) => {
+            const have = S.counts[mat]||0;
+            const ok = have >= need;
+            return `<div class='mr ${ok?"ok":"bad"}'><span class='cdot' style='background:${CULTURE_COL[matCulture(mat)]}'></span><span>${mat}</span><span class='need'><span class='have'>${have.toLocaleString()}</span> / ${need.toLocaleString()}</span></div>`;
+          }).join("");
+
+          card.innerHTML = `
+            <div class='art-head'>
+              <span class='art-name'>${col.name}</span>
+              <span class='art-lvl'>Lv ${col.lv}</span>
+              <div style='display:flex;align-items:center;gap:4px;margin-left:auto'>
+                <button class='btn-xs' data-col-dec='${key}'>−</button>
+                <span style='font-size:10px;min-width:20px;text-align:center;color:var(--accent)'>${times}×</span>
+                <button class='btn-xs' data-col-inc='${key}'>+</button>
+              </div>
+            </div>
+            <div style='font-size:9px;color:var(--muted);margin-bottom:4px'>Artefacts:</div>
+            ${artRows}
+            <div style='font-size:9px;color:var(--accent);margin:5px 0 3px;border-top:1px solid var(--border);padding-top:4px'>TOTAL MATERIALS NEEDED (×${times}):</div>
+            ${matRows}
+            <div class='art-footer'>
+              <span class='${allMet?"art-can":"art-cant"}'>${allMet?"✔ Have enough mats":"✖ Missing mats"}</span>
+            </div>`;
+
+          scroll.appendChild(card);
+        });
+      });
+
+      // Wire up +/- buttons
+      scroll.querySelectorAll("[data-col-inc]").forEach(b => {
+        b.addEventListener("click", () => {
+          const k=b.dataset.colInc; colCompletions[k]=(colCompletions[k]||1)+1; saveColCompletions(); renderCollections();
+        });
+      });
+      scroll.querySelectorAll("[data-col-dec]").forEach(b => {
+        b.addEventListener("click", () => {
+          const k=b.dataset.colDec; colCompletions[k]=Math.max(1,(colCompletions[k]||1)-1); saveColCompletions(); renderCollections();
+        });
+      });
+    }
+
+    document.getElementById("col-search").addEventListener("input", renderCollections);
+    document.getElementById("col-filter-collector").addEventListener("change", renderCollections);
+
     document.querySelectorAll(".tab").forEach(tab=>{
       tab.addEventListener("click", ()=>{
         document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -1090,6 +1296,7 @@
         tab.classList.add("active");
         document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
         if(tab.dataset.tab==="art") renderArts();
+        if(tab.dataset.tab==="col") renderCollections();
       });
     });
 
