@@ -914,12 +914,11 @@
         const idx = saved !== null ? parseInt(saved) : 0;
         chatReader.pos.mainbox = chatReader.pos.boxes[idx] || chatReader.pos.boxes[0];
         if (sel.options[idx]) sel.value = idx;
-        document.getElementById("chat-status").textContent = "Ready — " + chatReader.pos.boxes.length + " box(es) found";
-        document.getElementById("chat-status").style.color = "var(--accent2)";
         try {
           const box = chatReader.pos.mainbox.rect;
           alt1.overLayRect(A1lib.mixColor(255, 199, 0), box.x, box.y, box.width, box.height, 2000, 5);
         } catch(e) {}
+        startChatTracking();
       }, 1000);
     }
 
@@ -1056,7 +1055,7 @@
       chatInterval = setInterval(readChatbox, 200);
       document.getElementById("btn-chat-toggle").textContent = "⏹ Stop Tracking";
       document.getElementById("btn-chat-toggle").className = "btn dan";
-      document.getElementById("chat-status").textContent = "Tracking...";
+      document.getElementById("chat-status").textContent = "Tracking — " + (chatReader && chatReader.pos ? chatReader.pos.boxes.length : "?") + " box(es) found";
       document.getElementById("chat-status").style.color = "var(--accent2)";
     }
 
