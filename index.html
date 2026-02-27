@@ -895,8 +895,11 @@
           const noteHtml=art.note?`<div class='art-note'>${art.note}</div>`:"";
           const untrackedHtml=untracked.length?`<div class='art-note'>Requires ${untracked.map(me=>`${me[0]} ×${me[1]}`).join(", ")}</div>`:"";
           const artTipContent = [art.site, art.loc].filter(Boolean).join(" — ");
-          const artNameHtml = artTipContent
-            ? `<span class='art-name art-tooltip'>${art.name}<span class='tip'>📍 ${artTipContent}</span></span>`
+          const artCollections = COLLECTIONS.filter(c => c.artefacts.includes(art.name));
+          const artColLines = artCollections.map(c => `📋 ${c.collector}: ${c.name}`).join("<br>");
+          const tipHtml = [artTipContent ? `📍 ${artTipContent}` : "", artColLines].filter(Boolean).join("<br>");
+          const artNameHtml = tipHtml
+            ? `<span class='art-name art-tooltip'>${art.name}<span class='tip'>${tipHtml}</span></span>`
             : `<span class='art-name'>${art.name}</span>`;
           card.innerHTML=`<div class='art-head'>${artNameHtml}<span class='art-lvl'>Lv ${art.lv}</span><span class='art-xp'>${art.xp.toLocaleString()} xp</span></div>
             ${noteHtml}${untrackedHtml}${matRows}<div class='art-footer'><span class='${can?"art-can":"art-cant"}'>${can?"✔ Can restore":"✖ Missing mats"}</span>
