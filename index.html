@@ -242,51 +242,173 @@
       Dragonkin:"#c0006a", Unknown:"#888888"
     };
     const MATS = [
-      {name:"Third Age iron",lv:5,c:"Agnostic",caches:[]},
-      {name:"Samite silk",lv:12,c:"Agnostic",caches:[]},
-      {name:"White oak",lv:17,c:"Agnostic",caches:[]},
-      {name:"Goldrune",lv:20,c:"Agnostic",caches:[]},
-      {name:"Orthenglass",lv:20,c:"Agnostic",caches:[]},
-      {name:"Vellum",lv:24,c:"Agnostic",caches:[]},
-      {name:"Leather scraps",lv:29,c:"Agnostic",caches:[]},
-      {name:"Soapstone",lv:60,c:"Agnostic",caches:[]},
-      {name:"Animal furs",lv:76,c:"Agnostic",caches:[]},
-      {name:"Fossilised bone",lv:81,c:"Agnostic",caches:[]},
-      {name:"Stormguard steel",lv:70,c:"Armadylean",caches:[]},
-      {name:"Wings of War",lv:70,c:"Armadylean",caches:[]},
-      {name:"Armadylean yellow",lv:76,c:"Armadylean",caches:[]},
-      {name:"Aetherium alloy",lv:85,c:"Armadylean",caches:[]},
-      {name:"Quintessence",lv:91,c:"Armadylean",caches:[]},
-      {name:"Malachite green",lv:76,c:"Bandosian",caches:[]},
-      {name:"Mark of the Kyzaj",lv:76,c:"Bandosian",caches:[]},
-      {name:"Vulcanised rubber",lv:76,c:"Bandosian",caches:[]},
+      {name:"Third Age iron",lv:5,c:"Agnostic",caches:[
+        {location:"Archaeology Guild excavation site",count:3},
+      ]},
+      {name:"Samite silk",lv:12,c:"Agnostic",caches:[
+        {location:"Al Kharid east excavation site",count:4},
+        {location:"Kharid-et - Exterior excavation site",count:4},
+      ]},
+      {name:"White oak",lv:17,c:"Agnostic",caches:[
+        {location:"Ice mountain excavation site",count:3},
+      ]},
+      {name:"Goldrune",lv:20,c:"Agnostic",caches:[
+        {location:"Camdozaal cavern excavation site",count:4},
+      ]},
+      {name:"Orthenglass",lv:20,c:"Agnostic",caches:[
+        {location:"Anachronia north excavation site",count:4},
+      ]},
+      {name:"Vellum",lv:24,c:"Agnostic",caches:[
+        {location:"First Tower excavation site",count:3},
+      ]},
+      {name:"Leather scraps",lv:29,c:"Agnostic",caches:[
+        {location:"Morytania north excavation site",count:3},
+      ]},
+      {name:"Soapstone",lv:60,c:"Agnostic",caches:[
+        {location:"Waiko excavation site",count:4},
+      ]},
+      {name:"Animal furs",lv:76,c:"Agnostic",caches:[
+        {location:"Feldip excavation site",count:4},
+      ]},
+      {name:"Fossilised bone",lv:81,c:"Agnostic",caches:[
+        {location:"Odd Old Man - excavation site",count:3},
+        {location:"Ancient cavern excavation site",count:3},
+      ]},
+      {name:"Stormguard steel",lv:70,c:"Armadylean",caches:[
+        {location:"Stormguard Citadel - Research & Development south-west",count:3},
+        {location:"God Wars Dungeon - Armadylean south-west",count:4},
+      ]},
+      {name:"Wings of War",lv:70,c:"Armadylean",caches:[
+        {location:"God Wars Dungeon - Armadylean south-west",count:4},
+        {location:"Stormguard Citadel - Dayguard tower",count:2},
+        {location:"Stormguard Citadel - Nightguard tower",count:2},
+      ]},
+      {name:"Armadylean yellow",lv:76,c:"Armadylean",caches:[
+        {location:"Stormguard Citadel - Keshik memorial",count:2},
+        {location:"Stormguard Citadel - Relay station",count:3},
+        {location:"Empyrean Citadel excavation site",count:3},
+      ]},
+      {name:"Aetherium alloy",lv:85,c:"Armadylean",caches:[
+        {location:"Stormguard Citadel - Research & Development north-west",count:2},
+        {location:"Stormguard Citadel - Research & Development north-east",count:2},
+        {location:"Empyrean Citadel excavation site",count:3},
+      ]},
+      {name:"Quintessence",lv:91,c:"Armadylean",caches:[
+        {location:"Stormguard Citadel - Research & Development north-east",count:2},
+        {location:"Empyrean Citadel excavation site",count:3},
+        {location:"Stormguard Citadel - Howl's workshop",count:3},
+      ]},
+      {name:"Malachite green",lv:76,c:"Bandosian",caches:[
+        {location:"God Wars Dungeon - Bandos's Stronghold",count:3},
+        {location:"Warforge - Crucible arena",count:2},
+        {location:"Warforge - North goblin tunnels",count:2},
+      ]},
+      {name:"Mark of the Kyzaj",lv:76,c:"Bandosian",caches:[
+        {location:"Warforge - North goblin tunnels",count:2},
+        {location:"God Wars Dungeon - Bandosian west",count:3},
+      ]},
+      {name:"Vulcanised rubber",lv:76,c:"Bandosian",caches:[
+        {location:"Feldip shores excavation site",count:3},
+        {location:"Warforge - South goblin tunnels",count:4},
+      ]},
       {name:"Warforged bronze",lv:93,c:"Bandosian",caches:[
         {location:"Warforge - Crucible arena",count:2},
         {location:"God Wars Dungeon - Bandosian north",count:3},
         {location:"Warforge - North goblin tunnels",count:2},
         {location:"God Wars Dungeon - Bandos's Stronghold",count:4},
       ]},
-      {name:"Yu'biusk clay",lv:83,c:"Bandosian",caches:[]},
-      {name:"Dragon metal",lv:73,c:"Dragonkin",caches:[]},
-      {name:"Orgone",lv:73,c:"Dragonkin",caches:[]},
-      {name:"Compass rose",lv:77,c:"Dragonkin",caches:[]},
-      {name:"Carbon black",lv:78,c:"Dragonkin",caches:[]},
-      {name:"Felt",lv:78,c:"Dragonkin",caches:[]},
-      {name:"Keramos",lv:42,c:"Saradominist",caches:[]},
-      {name:"White marble",lv:42,c:"Saradominist",caches:[]},
-      {name:"Cobalt blue",lv:48,c:"Saradominist",caches:[]},
-      {name:"Everlight silvthril",lv:51,c:"Saradominist",caches:[]},
-      {name:"Star of Saradomin",lv:51,c:"Saradominist",caches:[]},
-      {name:"Cadmium red",lv:24,c:"Zamorakian",caches:[]},
-      {name:"Chaotic brimstone",lv:29,c:"Zamorakian",caches:[]},
-      {name:"Demonhide",lv:29,c:"Zamorakian",caches:[]},
-      {name:"Eye of Dagon",lv:36,c:"Zamorakian",caches:[]},
-      {name:"Hellfire metal",lv:36,c:"Zamorakian",caches:[]},
-      {name:"Zarosian insignia",lv:5,c:"Zarosian",caches:[]},
-      {name:"Imperial steel",lv:12,c:"Zarosian",caches:[]},
-      {name:"Ancient vis",lv:25,c:"Zarosian",caches:[]},
-      {name:"Tyrian purple",lv:25,c:"Zarosian",caches:[]},
-      {name:"Blood of Orcus",lv:58,c:"Zarosian",caches:[]},
+      {name:"Yu'biusk clay",lv:83,c:"Bandosian",caches:[
+        {location:"Feldip shores excavation site",count:4},
+        {location:"Warforge - Animal pens",count:2},
+      ]},
+      {name:"Dragon metal",lv:73,c:"Dragonkin",caches:[
+        {location:"Orthen - Xolo city",count:1},
+        {location:"Ancient cavern excavation site",count:3},
+        {location:"Orthen - Observation outpost",count:2},
+      ]},
+      {name:"Orgone",lv:73,c:"Dragonkin",caches:[
+        {location:"Anachronia west excavation site",count:3},
+        {location:"Orthen - Moksha ritual site",count:2},
+        {location:"Orthen - Xolo city",count:2},
+      ]},
+      {name:"Compass rose",lv:77,c:"Dragonkin",caches:[
+        {location:"Orthen - Crypt of Varanus",count:2},
+        {location:"Ancient cavern excavation site",count:4},
+      ]},
+      {name:"Carbon black",lv:78,c:"Dragonkin",caches:[
+        {location:"Mount Firewake excavation site",count:3},
+        {location:"Orthen - Moksha ritual site",count:2},
+      ]},
+      {name:"Felt",lv:78,c:"Dragonkin",caches:[
+        {location:"Orthen - Observation outpost",count:2},
+        {location:"Orthen - Crypt of Varanus",count:2},
+        {location:"Anachronia west excavation site",count:4},
+      ]},
+      {name:"Keramos",lv:42,c:"Saradominist",caches:[
+        {location:"God Wars Dungeon - Saradominist south-east",count:3},
+        {location:"Everlight - Mass grave",count:3},
+        {location:"Everlight - Oikoi",count:2},
+      ]},
+      {name:"White marble",lv:42,c:"Saradominist",caches:[
+        {location:"Everlight - Dominion Games stadium",count:2},
+        {location:"First Tower excavation site",count:3},
+        {location:"Everlight - Acropolis",count:2},
+      ]},
+      {name:"Cobalt blue",lv:48,c:"Saradominist",caches:[
+        {location:"God Wars Dungeon - Saradominist south-east",count:3},
+        {location:"Everlight - Amphitheatre",count:2},
+      ]},
+      {name:"Everlight silvthril",lv:51,c:"Saradominist",caches:[
+        {location:"Barrows mounds excavation site",count:3},
+        {location:"Everlight - Dominion Games stadium",count:2},
+      ]},
+      {name:"Star of Saradomin",lv:51,c:"Saradominist",caches:[
+        {location:"Barrows mounds excavation site",count:3},
+        {location:"Everlight - Acropolis",count:2},
+      ]},
+      {name:"Cadmium red",lv:24,c:"Zamorakian",caches:[
+        {location:"First Tower excavation site",count:3},
+        {location:"Infernal Source - Dagon Overlook south-west",count:2},
+        {location:"Infernal Source - Star Lodge cellar",count:2},
+      ]},
+      {name:"Chaotic brimstone",lv:29,c:"Zamorakian",caches:[
+        {location:"Daemonheim south-west excavation site",count:3},
+        {location:"Infernal Source - Vestibule of Futility south",count:2},
+      ]},
+      {name:"Demonhide",lv:29,c:"Zamorakian",caches:[
+        {location:"Infernal Source - The Harrowing north-east",count:3},
+        {location:"God Wars Dungeon - Zamorak's Fortress east",count:4},
+      ]},
+      {name:"Eye of Dagon",lv:36,c:"Zamorakian",caches:[
+        {location:"Daemonheim south-west excavation site",count:3},
+        {location:"Infernal Source - Dungeon of Disorder",count:2},
+      ]},
+      {name:"Hellfire metal",lv:36,c:"Zamorakian",caches:[
+        {location:"Infernal Source - Dagon Overlook north",count:1},
+        {location:"God Wars Dungeon - Zamorak's Fortress north",count:5},
+        {location:"Infernal Source - Dungeon of Disorder",count:2},
+        {location:"Infernal Source - Vestibule of Futility north-east",count:2},
+      ]},
+      {name:"Zarosian insignia",lv:5,c:"Zarosian",caches:[
+        {location:"Kharid-et - Barracks excavation site",count:2},
+        {location:"Empty Throne Room east excavation site",count:4},
+      ]},
+      {name:"Imperial steel",lv:12,c:"Zarosian",caches:[
+        {location:"Empty Throne Room north excavation site",count:4},
+        {location:"Kharid-et - Barracks excavation site",count:2},
+      ]},
+      {name:"Ancient vis",lv:25,c:"Zarosian",caches:[
+        {location:"Kharid-et - Culinarum excavation site",count:2},
+        {location:"Slayer Tower excavation site",count:4},
+      ]},
+      {name:"Tyrian purple",lv:25,c:"Zarosian",caches:[
+        {location:"Empty Throne Room south excavation site",count:4},
+        {location:"Kharid-et - Barracks excavation site",count:2},
+      ]},
+      {name:"Blood of Orcus",lv:58,c:"Zarosian",caches:[
+        {location:"Slayer Tower excavation site",count:3},
+        {location:"Kharid-et - Chapel excavation site",count:2},
+      ]},
     ];
     const ARTEFACTS = [
       // ── Kharid-et ──────────────────────────────────────────────────────────
