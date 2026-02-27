@@ -1270,13 +1270,14 @@
             const untracked = Object.entries(art.mats).filter(([m])=>!isMat(m));
             const untrackedNote = untracked.length ? `<span style='color:var(--muted);font-size:9px;margin-left:4px'>(+${untracked.map(([m,n])=>m+" ×"+(n*times)).join(", ")})</span>` : "";
             const artKey = key+"|"+artName;
+            const artKeyEsc = artKey.replace(/'/g, "&#39;");
             const found = colArtFound[artKey]||0;
             const done = found >= times;
             return `<div class='mr' style='padding:2px 0 2px 4px;font-size:10px;'>
-              <button class='btn-xs' data-art-dec='${artKey}' style='flex-shrink:0'>−</button>
+              <button class="btn-xs" data-art-dec="${artKeyEsc}" style='flex-shrink:0'>−</button>
               <span style='color:${done?"var(--accent2)":"var(--text)"};margin:0 3px;flex:1'>${artName}${untrackedNote}</span>
               <span style='color:${done?"var(--accent2)":"var(--danger)"};white-space:nowrap'>${found} / ${times}</span>
-              <button class='btn-xs' data-art-inc='${artKey}' style='flex-shrink:0;margin-left:3px'>+</button>
+              <button class="btn-xs" data-art-inc="${artKeyEsc}" style='flex-shrink:0;margin-left:3px'>+</button>
             </div>`;
           }).join("");
 
@@ -1322,13 +1323,14 @@
       });
       scroll.querySelectorAll("[data-art-inc]").forEach(b => {
         b.addEventListener("click", () => {
-          const k=b.dataset.artInc;
+          const k=b.dataset.artInc.replace(/&#39;/g, "'");
           colArtFound[k]=(colArtFound[k]||0)+1; saveColArtFound(); renderCollections();
         });
       });
       scroll.querySelectorAll("[data-art-dec]").forEach(b => {
         b.addEventListener("click", () => {
-          const k=b.dataset.artDec; colArtFound[k]=Math.max(0,(colArtFound[k]||0)-1); saveColArtFound(); renderCollections();
+          const k=b.dataset.artDec.replace(/&#39;/g, "'");
+          colArtFound[k]=Math.max(0,(colArtFound[k]||0)-1); saveColArtFound(); renderCollections();
         });
       });
     }
