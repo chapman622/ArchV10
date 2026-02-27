@@ -67,7 +67,9 @@
     .pw { width: 46px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
     .pb { height: 100%; border-radius: 2px; transition: width .3s; }
     .pb.low { background: var(--danger); } .pb.mid { background: var(--accent); } .pb.full { background: var(--accent2); }
-    .art-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; margin: 5px; padding: 7px; }
+    .art-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; margin: 5px; padding: 7px; cursor: pointer; }
+    .art-card.focused { border-color: var(--accent); box-shadow: 0 0 8px rgba(200,149,42,0.4); background: #1e1a0e; }
+    .art-card.hidden { display: none; }
     .art-head { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
     .art-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--accent); flex: 1; }
     .art-lvl { font-size: 9px; color: var(--muted); background: var(--border); padding: 1px 5px; border-radius: 2px; }
@@ -1247,6 +1249,7 @@
     })();
 
     let colCompletions = JSON.parse(localStorage.getItem("archColCompletions")||"{}");
+    let focusedCollection = null;
     let colArtFound = JSON.parse(localStorage.getItem("archColArtFound")||"{}");
     let colArtRestored = JSON.parse(localStorage.getItem("archColArtRestored")||"{}");
 
@@ -1350,9 +1353,10 @@
 
           card.innerHTML = `
             <div class='art-head'>
-              <span class='art-name'>${col.name}</span>
-              <span class='art-lvl'>Lv ${col.lv}</span>
+              <span class='art-name' style='flex:unset'>${col.name}</span>
+              <button class='col-pin-btn' data-pin-key='${key}' style='background:none;border:none;cursor:pointer;font-size:13px;padding:0 3px;opacity:${focusedCollection===key?"1":"0.25"};transition:opacity .15s' title='Pin collection'>📌</button>
               <div style='display:flex;align-items:center;gap:4px;margin-left:auto'>
+                <span class='art-lvl'>Lv ${col.lv}</span>
                 <button class='btn-xs' data-col-dec='${key}'>−</button>
                 <span style='font-size:10px;min-width:20px;text-align:center;color:var(--accent)'>${times}×</span>
                 <button class='btn-xs' data-col-inc='${key}'>+</button>
@@ -1367,10 +1371,42 @@
             </div>`;
 
           scroll.appendChild(card);
+          card.dataset.colKey = key;
         });
       });
 
-      // Wire up +/- buttons
+      // Pin button handler
+      scroll.querySelectorAll(".col-pin-btn").forEach(b => {
+        b.addEventListener("click", () => {
+          const k = b.dataset.pinKey;
+          focusedCollection = focusedCollection === k ? null : k;
+          scroll.querySelectorAll(".art-card[data-col-key]").forEach(c => {
+            const ck = c.dataset.colKey;
+            if (focusedCollection === null) {
+              c.classList.remove("hidden", "focused");
+            } else if (ck === focusedCollection) {
+              c.classList.remove("hidden");
+              c.classList.add("focused");
+            } else {
+              c.classList.remove("focused");
+              c.classList.add("hidden");
+            }
+            // Update pin opacity
+            const pin = c.querySelector(".col-pin-btn");
+            if (pin) pin.style.opacity = focusedCollection === ck ? "1" : "0.25";
+          });
+          scroll.querySelectorAll(".site-hdr").forEach(hdr => {
+            let next = hdr.nextElementSibling;
+            let hasVisible = false;
+            while (next && !next.classList.contains("site-hdr")) {
+              if (!next.classList.contains("hidden")) hasVisible = true;
+              next = next.nextElementSibling;
+            }
+            hdr.style.display = hasVisible ? "" : "none";
+          });
+        });
+      });
+
       scroll.querySelectorAll("[data-col-inc]").forEach(b => {
         b.addEventListener("click", () => {
           const k=b.dataset.colInc; colCompletions[k]=(colCompletions[k]||1)+1; saveColCompletions(); renderCollections();
@@ -1405,10 +1441,31 @@
           colArtRestored[k]=Math.max(0,(colArtRestored[k]||0)-1); saveColArtRestored(); renderCollections();
         });
       });
+
+      // Re-apply focus state after render
+      if (focusedCollection !== null) {
+        scroll.querySelectorAll(".art-card[data-col-key]").forEach(c => {
+          const ck = c.dataset.colKey;
+          if (ck === focusedCollection) {
+            c.classList.remove("hidden"); c.classList.add("focused");
+            const pin = c.querySelector(".col-pin-btn"); if (pin) pin.style.opacity = "1";
+          } else {
+            c.classList.add("hidden"); c.classList.remove("focused");
+          }
+        });
+        scroll.querySelectorAll(".site-hdr").forEach(hdr => {
+          let next = hdr.nextElementSibling, hasVisible = false;
+          while (next && !next.classList.contains("site-hdr")) {
+            if (!next.classList.contains("hidden")) hasVisible = true;
+            next = next.nextElementSibling;
+          }
+          hdr.style.display = hasVisible ? "" : "none";
+        });
+      }
     }
 
-    document.getElementById("col-search").addEventListener("input", renderCollections);
-    document.getElementById("col-filter-collector").addEventListener("change", renderCollections);
+    document.getElementById("col-search").addEventListener("input", ()=>{ focusedCollection=null; renderCollections(); });
+    document.getElementById("col-filter-collector").addEventListener("change", ()=>{ focusedCollection=null; renderCollections(); });
 
     document.querySelectorAll(".tab").forEach(tab=>{
       tab.addEventListener("click", ()=>{
