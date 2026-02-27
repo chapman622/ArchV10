@@ -1327,7 +1327,7 @@
               : `<span style='flex:1;color:var(--text)'>${artName}${untrackedNote}</span>`;
             const artKeyEsc = artKey.replace(/'/g, "&#39;");
             const damagedDone = damaged >= times;
-            const restoredDone = restored >= damaged && damaged > 0;
+            const restoredDone = restored >= times;
             return `<div class='mr' style='padding:2px 0 2px 4px;font-size:10px;display:flex;align-items:center;gap:4px'>
               ${nameSpan}
               <span style='font-size:9px;color:var(--muted);white-space:nowrap'>Damaged:</span>
@@ -1336,7 +1336,7 @@
               <button class="btn-xs" data-art-dmg-inc="${artKeyEsc}">+</button>
               <span style='font-size:9px;color:var(--muted);white-space:nowrap;margin-left:4px'>Restored:</span>
               <button class="btn-xs" data-art-dec="${artKeyEsc}">−</button>
-              <span style='color:${restoredDone?"var(--accent2)":"var(--danger)"};white-space:nowrap;min-width:28px;text-align:center'>${restored}/${damaged||times}</span>
+              <span style='color:${restoredDone?"var(--accent2)":"var(--danger)"};white-space:nowrap;min-width:28px;text-align:center'>${restored}/${times}</span>
               <button class="btn-xs" data-art-inc="${artKeyEsc}">+</button>
             </div>`;
           }).join("");
